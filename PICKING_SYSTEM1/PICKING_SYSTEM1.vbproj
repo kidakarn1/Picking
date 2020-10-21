@@ -24,6 +24,8 @@
     <NativePlatformName>Windows CE</NativePlatformName>
     <FormFactorID>
     </FormFactorID>
+    <DeployDirPrefix>%25CSIDL_PROGRAM_FILES%25</DeployDirPrefix>
+    <ApplicationIcon>5f2a09d80fcc7.32px.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -67,6 +69,18 @@
       <HintPath>bin\btsyslibnet.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Windowsce.Forms" />
+    <Reference Include="Newtonsoft.Json, Version=3.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Desktop\Newtonsoft.Json.3.5.8\lib\35\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json.Compact, Version=3.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\..\PICKING_SYSTEM1\Newtonsoft.Json.Compact.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json.Silverlight, Version=3.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\..\PICKING_SYSTEM1\Newtonsoft.Json.Silverlight.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.SqlClient, Version=3.0.3600.0, Culture=neutral, PublicKeyToken=3be235df1c8d2ad3, processorArchitecture=MSIL" />
@@ -92,6 +106,42 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="connect.vb" />
+    <Compile Include="part_detail_fg.Designer.vb">
+      <DependentUpon>part_detail_fg.vb</DependentUpon>
+    </Compile>
+    <Compile Include="part_detail_fg.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="scan_location_fg.Designer.vb">
+      <DependentUpon>scan_location_fg.vb</DependentUpon>
+    </Compile>
+    <Compile Include="scan_location_fg.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Select_plan_fg.Designer.vb">
+      <DependentUpon>Select_plan_fg.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Select_plan_fg.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="cut_ng.Designer.vb">
+      <DependentUpon>cut_ng.vb</DependentUpon>
+    </Compile>
+    <Compile Include="cut_ng.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="detail_scan.Designer.vb">
+      <DependentUpon>detail_scan.vb</DependentUpon>
+    </Compile>
+    <Compile Include="detail_scan.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Home.Designer.vb">
+      <DependentUpon>Home.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Home.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="main.vb">
       <SubType>Form</SubType>
     </Compile>
@@ -99,6 +149,7 @@
       <DependentUpon>main.vb</DependentUpon>
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Module\Api.vb" />
     <Compile Include="Module\Module1.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Resources.Designer.vb">
@@ -111,6 +162,24 @@
       <DependentUpon>part_detail.vb</DependentUpon>
     </Compile>
     <Compile Include="part_detail.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="part_detail_add.Designer.vb">
+      <DependentUpon>part_detail_add.vb</DependentUpon>
+    </Compile>
+    <Compile Include="part_detail_add.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="reprint.Designer.vb">
+      <DependentUpon>reprint.vb</DependentUpon>
+    </Compile>
+    <Compile Include="reprint.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="return_part.Designer.vb">
+      <DependentUpon>return_part.vb</DependentUpon>
+    </Compile>
+    <Compile Include="return_part.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="scan_location.Designer.vb">
@@ -131,8 +200,60 @@
     <Compile Include="Select_PD.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="img_user.Designer.vb">
+      <DependentUpon>img_user.vb</DependentUpon>
+    </Compile>
+    <Compile Include="img_user.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="select_pick_add.Designer.vb">
+      <DependentUpon>select_pick_add.vb</DependentUpon>
+    </Compile>
+    <Compile Include="select_pick_add.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="setting.Designer.vb">
+      <DependentUpon>setting.vb</DependentUpon>
+    </Compile>
+    <Compile Include="setting.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="show_image_part.Designer.vb">
+      <DependentUpon>show_image_part.vb</DependentUpon>
+    </Compile>
+    <Compile Include="show_image_part.vb">
+      <SubType>Form</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="part_detail_fg.resx">
+      <DependentUpon>part_detail_fg.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="scan_location_fg.resx">
+      <DependentUpon>scan_location_fg.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Select_plan_fg.resx">
+      <DependentUpon>Select_plan_fg.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Select_plan_fg.yo-NG.resx">
+      <DependentUpon>Select_plan_fg.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="cut_ng.resx">
+      <DependentUpon>cut_ng.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="detail_scan.resx">
+      <DependentUpon>detail_scan.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Home.resx">
+      <DependentUpon>Home.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="main.resx">
       <DependentUpon>main.vb</DependentUpon>
       <SubType>Designer</SubType>
@@ -145,6 +266,18 @@
     </EmbeddedResource>
     <EmbeddedResource Include="part_detail.resx">
       <DependentUpon>part_detail.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="part_detail_add.resx">
+      <DependentUpon>part_detail_add.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="reprint.resx">
+      <DependentUpon>reprint.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="return_part.resx">
+      <DependentUpon>return_part.vb</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="scan_location.resx">
@@ -163,6 +296,117 @@
       <DependentUpon>Select_PD.vb</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="img_user.resx">
+      <DependentUpon>img_user.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="select_pick_add.resx">
+      <DependentUpon>select_pick_add.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="setting.resx">
+      <DependentUpon>setting.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="show_image_part.resx">
+      <DependentUpon>show_image_part.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="1234.ico" />
+    <Content Include="5f295b928f189.32px.ico" />
+    <Content Include="5f295bbfd23e9.16px.ico" />
+    <Content Include="5f295d09f18f7.32px.ico" />
+    <Content Include="5f295d09f18f7.64px.ico" />
+    <Content Include="5f295e14e2270.32px.ico" />
+    <Content Include="5f29628005e5c.32px.ico" />
+    <Content Include="5f29633b40d2d.32px.ico" />
+    <Content Include="5f2963ef52542.32px.ico" />
+    <Content Include="5f29648fca4bd.32px.ico" />
+    <Content Include="5f2a09d80fcc7.32px.ico" />
+    <Content Include="application\showimage\1050B375_00.jpg" />
+    <Content Include="application\showimage\1300A033_00.jpg" />
+    <Content Include="application\showimage\16100-61J00_00.jpg" />
+    <Content Include="application\showimage\16100-BZ051-A_00.jpg" />
+    <Content Include="application\showimage\898145-1531_00.jpg" />
+    <Content Include="application\showimage\898232-6241_00.jpg" />
+    <Content Include="application\showimage\BT-W155.jpg" />
+    <Content Include="application\showimage\BT-W75.jpg" />
+    <Content Include="application\showimage\BT-W85.jpg" />
+    <Content Include="application\showimage\btCommLibNet.dll" />
+    <Content Include="application\showimage\btFileLibNet.dll" />
+    <Content Include="application\showimage\btLibDefNet.dll" />
+    <Content Include="application\showimage\btScanLibNet.dll" />
+    <Content Include="application\showimage\btSysLibNet.dll" />
+    <Content Include="application\showimage\L120-12720_00.jpg" />
+    <Content Include="application\showimage\MD328078_00.jpg" />
+    <Content Include="application\showimage\MD372348_00.jpg" />
+    <Content Include="application\showimage\PW811566_00.jpg" />
+    <Content Include="application\showimage\ShowImage.exe" />
+    <Content Include="bin\btcommlibnet.dll" />
+    <Content Include="bin\btlibdefnet.dll" />
+    <Content Include="bin\btsyslibnet.dll" />
+    <Content Include="bin\Debug\btcommlibnet.dll" />
+    <Content Include="bin\Debug\btlibdefnet.dll" />
+    <Content Include="bin\Debug\btsyslibnet.dll" />
+    <Content Include="bin\Debug\Newtonsoft.Json.Compact.dll" />
+    <Content Include="bin\Debug\Newtonsoft.Json.Net20.dll" />
+    <Content Include="bin\Debug\Newtonsoft.Json.Silverlight.dll" />
+    <Content Include="bin\Debug\PICKING_SYSTEM.exe" />
+    <Content Include="bin\Debug\PICKING_SYSTEM.pdb" />
+    <Content Include="bin\Debug\PICKING_SYSTEM.xml" />
+    <Content Include="bin\Debug\PICKING_SYSTEM1.exe" />
+    <Content Include="bin\Debug\PICKING_SYSTEM1.pdb" />
+    <Content Include="bin\Debug\PICKING_SYSTEM1.xml" />
+    <Content Include="bin\Debug\System.Data.OracleClient.dll" />
+    <Content Include="bin\Debug\System.Data.SqlClient.dll" />
+    <Content Include="bin\Debug\System.Drawing.dll" />
+    <Content Include="bin\Debug\System.EnterpriseServices.dll" />
+    <Content Include="bin\Debug\System.EnterpriseServices.Wrapper.dll" />
+    <Content Include="bin\Debug\System.Transactions.dll" />
+    <Content Include="bin\Debug\System.Web.dll" />
+    <Content Include="bin\Debug\yo-NG\PICKING_SYSTEM1.resources.dll" />
+    <Content Include="bin\Release\btcommlibnet.dll" />
+    <Content Include="bin\Release\btlibdefnet.dll" />
+    <Content Include="bin\Release\btsyslibnet.dll" />
+    <Content Include="bin\Release\Newtonsoft.Json.Compact.dll" />
+    <Content Include="bin\Release\Newtonsoft.Json.Net20.dll" />
+    <Content Include="bin\Release\Newtonsoft.Json.Silverlight.dll" />
+    <Content Include="bin\Release\PICKING_SYSTEM1.exe" />
+    <Content Include="bin\Release\PICKING_SYSTEM1.pdb" />
+    <Content Include="bin\Release\PICKING_SYSTEM1.xml" />
+    <Content Include="bin\Release\System.Data.OracleClient.dll" />
+    <Content Include="bin\Release\System.Data.SqlClient.dll" />
+    <Content Include="bin\Release\System.Drawing.dll" />
+    <Content Include="bin\Release\System.EnterpriseServices.dll" />
+    <Content Include="bin\Release\System.EnterpriseServices.Wrapper.dll" />
+    <Content Include="bin\Release\System.Transactions.dll" />
+    <Content Include="bin\Release\System.Web.dll" />
+    <Content Include="bin\Release\yo-NG\PICKING_SYSTEM1.resources.dll" />
+    <Content Include="dbnetlib.dll" />
+    <Content Include="icons8-barcode-reader-48.ico" />
+    <Content Include="icons8-hand-box-64.ico" />
+    <Content Include="image\load.gif" />
+    <Content Include="image\loading2.gif" />
+    <Content Include="logo_pick.ico" />
+    <Content Include="logo_picking.ico" />
+    <None Include="Resources\Youtube_loading_symbol_1_%28wobbly%29.gif" />
+    <None Include="Resources\Image1.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Debug\vs2DA8.tmp" />
+    <None Include="bin\Debug\vs30FA.tmp" />
+    <None Include="bin\Debug\vs33FC.tmp" />
+    <None Include="bin\Debug\vs4FCC.tmp" />
+    <None Include="bin\Debug\vs7BDC.tmp" />
+    <None Include="bin\Debug\vs8E42.tmp" />
+    <None Include="bin\Debug\vsA240.tmp" />
+    <None Include="bin\Debug\vsBF4F.tmp" />
+    <None Include="bin\Debug\vsD7CD.tmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="obj\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CompactFramework.VisualBasic.targets" />
   <ProjectExtensions>

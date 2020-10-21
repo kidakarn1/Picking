@@ -5,7 +5,8 @@ Imports System.Data.SqlClient
 Imports System.Configuration
 Imports PICKING_SYSTEM
 Public Class Select_PD
-    Dim myConn As SqlConnection
+    'Dim myConn As SqlConnection
+    Public myConn = "NOO"
     Dim reader As SqlDataReader
     Public given_code_pd As String
     Dim dat As String = String.Empty
@@ -17,13 +18,10 @@ Public Class Select_PD
 
     Private Sub Select_PD_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
         Try
-            myConn = New SqlConnection("Data Source=192.168.161.101;Initial Catalog=tbkkfa01_dev;Integrated Security=False;User Id=pcs_admin;Password=P@ss!fa")
-            'myConn = New SqlConnection("Data Source=192.168.10.12\SQLEXPRESS2017,1433;Initial Catalog=tbkkfa01_dev;Integrated Security=False;User Id=sa;Password=p@sswd;")
-
-            myConn.Open()
-        Catch ex As Exception
-            MsgBox("Connect Database Fail" & vbNewLine & ex.Message, 16, "Status naja")
+            Dim connect_db = New connect()
+            myConn = connect_db.conn()
         Finally
+
             query_sys_department()
             emp_name.Text = main.show_empToanofrm()
             se_code_user.Text = main.show_code_id_user()
@@ -52,20 +50,16 @@ Public Class Select_PD
     End Sub
 
     Private Sub Button1_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Btb_pd_back.Click
-        main.pd_user = ""
-        main.emp_cd.Text = ""
-        main.count_emp_id = 0
+        main.ml = 0
+        main.Timer1.Enabled = False
+        main.Panel2.Visible = False
         Me.Close() 'จาก close'
         main.Show()
 
     End Sub
-    Private Sub scan_qty_KeyDown(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyEventArgs)
-        Select Case e.KeyCode
-            Case System.Windows.Forms.Keys.Enter
-                next_page()
-        End Select
-    End Sub
     Private Sub Button1_Click_1(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Button1.Click
+        ComboBox1.Text.Substring(0, 2)
+        Module1.select_pd = ComboBox1.Text.Substring(2)
         next_page()
     End Sub
     Public Function give_value_code_pd() As String
@@ -84,9 +78,14 @@ Public Class Select_PD
     Public Sub query_sys_department()
         Dim Line As Select_Line = New Select_Line()
         Line.Line_Emp_cd.Text = main.code_id_user ' 'แสดงในหน้า Select_line
+
+        If main.pd_user <> "" Or main.pd_user IsNot Nothing Then
+
+        End If
+
         PD_hidden_dep_id.Text = main.pd_user - 1 'ส่ง PD user ไปหน้า select_pd'
         'a.ComboBox1.SelectedIndex = 0'
-        Dim strCommand As String = "select top 5 sec_name,dep_id from sys_department order by dep_id"
+        Dim strCommand As String = "select sec_name,dep_id from sys_department where  enable='1' order by dep_id"
         Dim command As SqlCommand = New SqlCommand(strCommand, myConn)
         reader = command.ExecuteReader()
         Do While reader.Read()
@@ -96,28 +95,35 @@ Public Class Select_PD
         ComboBox1.SelectedIndex = main.pd_user - 1 'ให่ค่า PD'
     End Sub
     Public Sub next_page()
+        '   Try
+        Dim sel_pd As String = ""
+        sel_pd = ComboBox1.SelectedItem.ToString()
+        Dim subSelpd As String
+        subSelpd = sel_pd.Substring(2, 4)
+        given_code_pd = sel_pd
+        Module1.CODE_PD = sel_pd
+        Dim Line As Select_Line = New Select_Line()
         Try
-            Dim sel_pd As String = ""
-            sel_pd = ComboBox1.SelectedItem.ToString()
-            Dim subSelpd As String
-            subSelpd = sel_pd.Substring(2, 4)
-            given_code_pd = sel_pd
-            Module1.CODE_PD = sel_pd
-            Dim Line As Select_Line = New Select_Line()
-            Try
-                Module1.data_combo = subSelpd
-            Catch ex As Exception
-                MsgBox("Connect Database Fail" & vbNewLine & ex.Message, 16, "Status combo")
-            Finally
-                'ComboBox1.SelectedIndex = 0 'ให่ค่า PD'
-
-                Line.PD3 = Me
-                Line.PD3 = Me
-                Line.Show()
-                Me.Hide()
-            End Try
+            Module1.data_combo = subSelpd
         Catch ex As Exception
-            MsgBox("Please select production!!!")
+            MsgBox("Connect Database Fail" & vbNewLine & ex.Message, 16, "Status combo")
+        Finally
+            'ComboBox1.SelectedIndex = 0 'ให่ค่า PD'
+            Line.PD3 = Me
+            Line.PD3 = Me
+            Line.Show()
+            Me.Hide()
         End Try
+        'Catch ex As Exception
+        'MsgBox("Please select production!!!" & vbNewLine & ex.Message, 16, "Status BTN$")
+        'MsgBox("Please select production!!!")
+        ' End Try
     End Sub
+
+    Private Sub PictureBox2_Click(ByVal sender As System.Object, ByVal e As System.EventArgs)
+
+    End Sub
+
+
+
 End Class

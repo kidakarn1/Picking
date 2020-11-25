@@ -382,7 +382,7 @@ Partial Public Class main
         Me.Panel1.Controls.Add(Me.TextBox1)
         Me.Panel1.Controls.Add(Me.Label2)
         Me.Panel1.Controls.Add(Me.PictureBox6)
-        Me.Panel1.Location = New System.Drawing.Point(-1, 92)
+        Me.Panel1.Location = New System.Drawing.Point(-1, 88)
         Me.Panel1.Name = "Panel1"
         Me.Panel1.Size = New System.Drawing.Size(476, 452)
         '

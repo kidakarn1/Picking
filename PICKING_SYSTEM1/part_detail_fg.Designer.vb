@@ -78,6 +78,7 @@ Partial Public Class part_detail_fg
         Me.Label8 = New System.Windows.Forms.Label
         Me.Label9 = New System.Windows.Forms.Label
         Me.PictureBox2 = New System.Windows.Forms.PictureBox
+        Me.check_qr = New System.Windows.Forms.TextBox
         Me.OpenFileDialog1 = New System.Windows.Forms.OpenFileDialog
         Me.alert_pickdetail_number = New System.Windows.Forms.PictureBox
         Me.alert_loop = New System.Windows.Forms.PictureBox
@@ -90,6 +91,7 @@ Partial Public Class part_detail_fg
         Me.alert_detail = New System.Windows.Forms.PictureBox
         Me.alert_pickdetail_ok = New System.Windows.Forms.PictureBox
         Me.Panel7 = New System.Windows.Forms.Panel
+        Me.alert_no_tranfer_data = New System.Windows.Forms.PictureBox
         Me.alert_open_printer = New System.Windows.Forms.PictureBox
         Me.Panel1.SuspendLayout()
         Me.Panel5.SuspendLayout()
@@ -138,6 +140,7 @@ Partial Public Class part_detail_fg
         Me.Panel1.Controls.Add(Me.Label8)
         Me.Panel1.Controls.Add(Me.Label9)
         Me.Panel1.Controls.Add(Me.PictureBox2)
+        Me.Panel1.Controls.Add(Me.check_qr)
         Me.Panel1.Location = New System.Drawing.Point(3, 44)
         Me.Panel1.Name = "Panel1"
         Me.Panel1.Size = New System.Drawing.Size(462, 525)
@@ -156,9 +159,9 @@ Partial Public Class part_detail_fg
         Me.Panel5.Controls.Add(Me.Button5)
         Me.Panel5.Controls.Add(Me.TextBox2)
         Me.Panel5.Controls.Add(Me.TextBox1)
-        Me.Panel5.Location = New System.Drawing.Point(0, 43)
+        Me.Panel5.Location = New System.Drawing.Point(0, 31)
         Me.Panel5.Name = "Panel5"
-        Me.Panel5.Size = New System.Drawing.Size(462, 479)
+        Me.Panel5.Size = New System.Drawing.Size(462, 491)
         '
         'Label10
         '
@@ -372,9 +375,9 @@ Partial Public Class part_detail_fg
         '
         Me.PictureBox3.BackColor = System.Drawing.Color.White
         Me.PictureBox3.Image = CType(resources.GetObject("PictureBox3.Image"), System.Drawing.Image)
-        Me.PictureBox3.Location = New System.Drawing.Point(-3, 0)
+        Me.PictureBox3.Location = New System.Drawing.Point(-3, 32)
         Me.PictureBox3.Name = "PictureBox3"
-        Me.PictureBox3.Size = New System.Drawing.Size(465, 522)
+        Me.PictureBox3.Size = New System.Drawing.Size(465, 490)
         Me.PictureBox3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage
         '
         'want_to_tag
@@ -607,7 +610,7 @@ Partial Public Class part_detail_fg
         Me.lb_code_pd.BackColor = System.Drawing.Color.MintCream
         Me.lb_code_pd.Font = New System.Drawing.Font("Tahoma", 15.0!, System.Drawing.FontStyle.Bold)
         Me.lb_code_pd.ForeColor = System.Drawing.Color.Blue
-        Me.lb_code_pd.Location = New System.Drawing.Point(155, 15)
+        Me.lb_code_pd.Location = New System.Drawing.Point(162, 3)
         Me.lb_code_pd.Name = "lb_code_pd"
         Me.lb_code_pd.Size = New System.Drawing.Size(137, 25)
         Me.lb_code_pd.Text = "Label3"
@@ -617,9 +620,9 @@ Partial Public Class part_detail_fg
         Me.lb_code_user.BackColor = System.Drawing.Color.MintCream
         Me.lb_code_user.Font = New System.Drawing.Font("Tahoma", 15.0!, System.Drawing.FontStyle.Bold)
         Me.lb_code_user.ForeColor = System.Drawing.Color.FromArgb(CType(CType(0, Byte), Integer), CType(CType(64, Byte), Integer), CType(CType(0, Byte), Integer))
-        Me.lb_code_user.Location = New System.Drawing.Point(13, 15)
+        Me.lb_code_user.Location = New System.Drawing.Point(3, 3)
         Me.lb_code_user.Name = "lb_code_user"
-        Me.lb_code_user.Size = New System.Drawing.Size(147, 25)
+        Me.lb_code_user.Size = New System.Drawing.Size(157, 37)
         Me.lb_code_user.Text = "Label1"
         '
         'show_number_supply
@@ -659,6 +662,13 @@ Partial Public Class part_detail_fg
         Me.PictureBox2.Name = "PictureBox2"
         Me.PictureBox2.Size = New System.Drawing.Size(456, 409)
         Me.PictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage
+        '
+        'check_qr
+        '
+        Me.check_qr.Location = New System.Drawing.Point(3, 3)
+        Me.check_qr.Name = "check_qr"
+        Me.check_qr.Size = New System.Drawing.Size(100, 23)
+        Me.check_qr.TabIndex = 3
         '
         'OpenFileDialog1
         '
@@ -746,6 +756,8 @@ Partial Public Class part_detail_fg
         '
         'Panel7
         '
+        Me.Panel7.Controls.Add(Me.alert_pickdetail_number)
+        Me.Panel7.Controls.Add(Me.alert_no_tranfer_data)
         Me.Panel7.Controls.Add(Me.alert_open_printer)
         Me.Panel7.Controls.Add(Me.alert_pickdetail_ok)
         Me.Panel7.Controls.Add(Me.alert_detail)
@@ -756,10 +768,17 @@ Partial Public Class part_detail_fg
         Me.Panel7.Controls.Add(Me.alert_success)
         Me.Panel7.Controls.Add(Me.alert_reprint)
         Me.Panel7.Controls.Add(Me.alert_loop)
-        Me.Panel7.Controls.Add(Me.alert_pickdetail_number)
         Me.Panel7.Location = New System.Drawing.Point(57, 171)
         Me.Panel7.Name = "Panel7"
         Me.Panel7.Size = New System.Drawing.Size(413, 351)
+        '
+        'alert_no_tranfer_data
+        '
+        Me.alert_no_tranfer_data.Image = CType(resources.GetObject("alert_no_tranfer_data.Image"), System.Drawing.Image)
+        Me.alert_no_tranfer_data.Location = New System.Drawing.Point(-2, -7)
+        Me.alert_no_tranfer_data.Name = "alert_no_tranfer_data"
+        Me.alert_no_tranfer_data.Size = New System.Drawing.Size(417, 365)
+        Me.alert_no_tranfer_data.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage
         '
         'alert_open_printer
         '
@@ -862,4 +881,6 @@ Partial Public Class part_detail_fg
     Friend WithEvents Button5 As System.Windows.Forms.Button
     Friend WithEvents TextBox2 As System.Windows.Forms.TextBox
     Friend WithEvents TextBox1 As System.Windows.Forms.TextBox
+    Friend WithEvents alert_no_tranfer_data As System.Windows.Forms.PictureBox
+    Friend WithEvents check_qr As System.Windows.Forms.TextBox
 End Class

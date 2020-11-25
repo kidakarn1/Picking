@@ -44,8 +44,16 @@ Public Class setting
         main.ml = 0
         main.Timer1.Enabled = False
         main.Panel2.Visible = False
+        'MsgBox("999")
         Me.Close()
-        main.Show()
+        'MsgBox("----")
+        If Module1.check_page <> "NO_DATA" Then
+            '   MsgBox("1")
+            part_detail.Show()
+            '  MsgBox("2")
+        Else
+            main.Show()
+        End If
     End Sub
 
     Private Sub Panel1_GotFocus(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Panel1.GotFocus

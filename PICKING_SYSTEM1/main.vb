@@ -91,8 +91,6 @@ Public Class main
                 ' If Str.Length() = 5 Then
                 query_user()
                 'End If
-            Case System.Windows.Forms.Keys.F1
-                Application.Exit()
         End Select
     End Sub
 
@@ -295,8 +293,6 @@ Public Class main
     Private Sub emp_cd_TextChanged(ByVal sender As System.Object, ByVal e As System.EventArgs)
 
     End Sub
-
-
 
     Private Sub Panel3_GotFocus_1(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Panel3.GotFocus
 

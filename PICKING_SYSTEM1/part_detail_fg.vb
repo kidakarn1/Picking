@@ -68,6 +68,7 @@ Public Class part_detail_fg
     Dim F_scan_lot As ArrayList = New ArrayList()
     Dim F_tag_typ As ArrayList = New ArrayList()
     Dim F_tag_readed As ArrayList = New ArrayList()
+    Dim F_Line_cd As ArrayList = New ArrayList()
     Dim F_scan_emp As ArrayList = New ArrayList()
     Dim F_term_cd As ArrayList = New ArrayList()
     Dim F_updated_date As ArrayList = New ArrayList()
@@ -77,6 +78,7 @@ Public Class part_detail_fg
     Dim F_tag_remain_qty As ArrayList = New ArrayList()
     Dim F_Create_Date As ArrayList = New ArrayList()
     Dim F_Create_By As ArrayList = New ArrayList()
+    Dim F_delivery_date As ArrayList = New ArrayList()
     Dim check_data As ArrayList = New ArrayList()
     '--------------------------------------------------------------
     ' Constant definitions
@@ -164,6 +166,7 @@ Public Class part_detail_fg
             Panel5.Visible = False
             alert_reprint.Visible = False
             alert_open_printer.Visible = False
+            alert_no_tranfer_data.Visible = False
             Panel7.Visible = False
 
             get_data_tetail()
@@ -331,6 +334,17 @@ Public Class part_detail_fg
     Private Sub scan_qty_KeyDown(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles scan_qty.KeyDown
 comeback:
         Select Case e.KeyCode
+            Case System.Windows.Forms.Keys.F3
+                'Module1.check_page = "part_detail_fg"
+                'Dim setting As setting = New setting()
+                'setting.Show()
+                'Me.Hide()
+            Case System.Windows.Forms.Keys.F4
+                If Panel6.Visible = True Then
+                    Panel6.Visible = False
+                Else
+                    Panel6.Visible = True
+                End If
             Case System.Windows.Forms.Keys.Enter
                 Dim testString As String = scan_qty.Text
                 Module1.scan_qr_part_detail = scan_qty.Text
@@ -339,7 +353,7 @@ comeback:
 
                 length = testLen
                 leng_scan_qty = length
-                'MsgBox(testLen)
+                'MsgBox(testLen)วว
                 Dim req_qty As Double = 0.0
                 req_qty = Val(Module1.FG_QTY.Substring(6))
                 Dim number_remain As Double = 0.0
@@ -517,6 +531,9 @@ go_pick_detail_number:
                                         ElseIf check_po = 3 Then
                                             bool_check_scan = "scan_ok_pickdetail"
                                             GoTo go_scan_ok_pickdetail
+                                        ElseIf check_po = 5 Then
+                                            bool_check_scan = "ever"
+                                            GoTo alert_ever
                                         ElseIf check_po = 1 Then
                                             inset_check_qr_part()
                                         End If
@@ -636,7 +653,6 @@ go_pick_detail_number:
                         Catch ex As Exception
                             Dim MyValue As Integer
                             MyValue = Int((9 * Rnd()) + 1) & Int((9 * Rnd()) + 1) & Int((9 * Rnd()) + 1)
-                            item_cd_scan = Trim(scan_qty.Text.Substring(18, 25))
                             fa_line_cd = scan_qty.Text.Substring(2, 6)
                             fa_act_date = Trim(scan_qty.Text.Substring(44, 8))
                             fa_lot_seq = MyValue
@@ -644,8 +660,26 @@ go_pick_detail_number:
                             fa_lot_no = scan_qty.Text.Substring(58, 4)
                             fa_plant_cd = "51"
                             fa_tag_seq = MyValue
+                            item_cd_scan = Trim(scan_qty.Text.Substring(18, 25))
                         End Try
+                        If ps <> item_cd_scan Then
+                            Try
+                                Dim str_item = scan_qty.Text.Split(" ")
+                                Dim arr_data = str_item(18)
+                                Dim res_data = arr_data.Substring(6)
+                                'MsgBox(ps)
+                                'MsgBox(res_data)
+                                If ps = res_data Then
+                                    item_cd_scan = res_data
+                                    GoTo next_station
+                                End If
+                            Catch ex As Exception
+                                GoTo check_loop
+                            End Try
+                        End If
+check_loop:
                         If ps = item_cd_scan Then
+next_station:
                             ' Button2.Visible = True 'สำหรับเอา stock แค่ครึ่งเดียว'
                             text_tmp.Text = fa_qty
                             'MsgBox(req_qty.Text)
@@ -653,6 +687,7 @@ go_pick_detail_number:
 
                             'เคสเหลือจาก Tag
                             If Ck_dup(ListBox, order_number & supp_seq) = True Then
+alert_ever:
                                 If bool_check_scan = "ever" Then
                                     text_tmp.Text = ""
                                     Re_scan_fa()
@@ -687,6 +722,14 @@ go_pick_detail_number_fw:
                                     alert_pickdetail_number.Visible = True
                                     text_box_success.Visible = True
                                     text_box_success.Focus()
+                                ElseIf bool_check_scan = "NO_data_tranfer" Then
+
+go_No_data_tranfer:
+                                    Panel7.Visible = True
+                                    alert_no_tranfer_data.Visible = True
+                                    check_qr.Visible = True
+                                    check_qr.Focus()
+                                    GoTo exit_keydown
                                 End If
                             Else
                                 If show_number_supply.Text > req_qty And firstscan = "0" And number_remain > 0 Then
@@ -776,6 +819,15 @@ go_pick_detail_number_fw:
                                         check_po_lot = "pick_ok"
                                         Dim QTY_FW = scan_qty.Text.Substring(52, 6)
                                         totall_qty_scan += CDbl(Val(QTY_FW))
+
+                                        If check_FA_TAG_FG() = False Then
+                                            bool_check_scan = "No_data_tranfer"
+                                            GoTo go_No_data_tranfer
+                                        ElseIf check_FA_TAG_FG() = 1 Then
+                                            bool_check_scan = "ever"
+                                            GoTo alert_ever
+                                        End If
+
                                         Dim check_po As Integer = check_scan_detail_PO("NO_DATA", "NO_DATA")
                                         If check_po = 0 Then 'check ว่า scan ถูกใน  pickdetail มั้ย'
                                             bool_check_scan = "Plase_scna_detail"
@@ -786,6 +838,9 @@ go_pick_detail_number_fw:
                                         ElseIf check_po = 3 Then
                                             bool_check_scan = "scan_ok_pickdetail"
                                             GoTo go_scan_ok_pickdetail_fw
+                                        ElseIf check_po = 5 Then
+                                            bool_check_scan = "ever"
+                                            GoTo alert_ever
                                         ElseIf check_po = 1 Then
                                             inset_check_qr_part()
                                         End If
@@ -961,7 +1016,18 @@ exit_keydown:
             plan_seq = scan_qty.Text.Substring(16, 3)
             lot_sep = scan_qty.Text.Substring(58, 4)
             tag_number = scan_qty.Text.Substring(100, 3)
-            tag_seq = plan_seq + lot_sep + tag_number
+            tag_seq = scan_qty.Text.Substring(87, 16) 'plan_seq + lot_sep + tag_number
+            Dim check_arr = tag_seq.Split(" ")
+            Dim i As Integer = 0
+            For Each value As String In check_arr
+                'MsgBox(i)
+                If check_arr(i) <> "" Then
+                    tag_seq = check_arr(i)
+                    GoTo out
+                End If
+                i = i + 1
+            Next
+out:
             'order_number = scan_qty.Text.Substring(2 , 10)
             order_number = scan_qty.Text.Substring(58, 4)
             qty_scan = scan_qty.Text.Substring(52, 6)
@@ -983,7 +1049,7 @@ exit_keydown:
         Else
             bool_check_scan = "NO_Reprint"
         End If
-        Dim strCommand3 As String = "SELECT COUNT(id) as c, com_flg  as com_flg , id as i  , scan_qty as qty FROM sup_scan_pick_detail  where item_cd = '" & Module1.FG_PART_CD.Substring(16) & "' and scan_lot = '" & order_number & "' and tag_seq = '" & tag_seq & "' and scan_qty >= '" & qty_scan & "' group by com_flg , id , scan_qty"
+        Dim strCommand3 As String = "SELECT COUNT(id) as c, com_flg  as com_flg , id as i  , scan_qty as qty FROM sup_scan_pick_detail  where item_cd = '" & Module1.FG_PART_CD.Substring(16) & "' and scan_lot = '" & order_number & "' and tag_seq = '" & tag_seq & "' and line_cd = '" & scan_qty.Text.Substring(2, 6) & "' and scan_qty >= '" & qty_scan & "' group by com_flg , id , scan_qty"
         ' MsgBox(strCommand3)
         Dim command3 As SqlCommand = New SqlCommand(strCommand3, myConn)
         reader = command3.ExecuteReader()
@@ -995,14 +1061,12 @@ exit_keydown:
         Loop
         reader.Close()
         'MsgBox("c = " & count)
-
         '  If check_lot_scan_web_post() = True Then 'CHECK LOT ว่า ถูกต้องหรือไม่'
         Dim status As Integer = 0
-
         status = check_remain_in_detail_test(order_number, tag_seq, qty_scan)
-
         If status = 0 Then 'ตวจสอบว่า remain ว่ามีมั้ย ใน item_cd'
 LOOP_INSERT:
+
             Dim check_detail_po As Integer = check_scan_detail_PO(order_number, Code_suppier)
             If check_detail_po = 0 Then 'check ว่า scan ถูกใน  pickdetail มั้ย'
                 bool_check_scan = "Plase_scna_detail"
@@ -1012,6 +1076,9 @@ LOOP_INSERT:
                 Return True
             ElseIf check_detail_po = 3 Then
                 bool_check_scan = "scan_ok_pickdetail"
+                Return True
+            ElseIf check_detail_po = 4 Then
+                bool_check_scan = "NO_data_tranfer"
                 Return True
             End If
             If check_com_flg = "0" Then
@@ -1075,7 +1142,6 @@ LOOP_INSERT:
     End Function
 
     Public Function check_reprint_stock(ByVal l_size As String, ByVal old_qty As String, ByVal textbox As String, ByVal new_qty As String)
-
         If l_size = "62" Then
             Dim PO As String = textbox.Substring(2, 10)
             Dim textbox_split = textbox.Split(" ")
@@ -1087,7 +1153,6 @@ LOOP_INSERT:
             Dim cmd As SqlCommand = New SqlCommand(sql, myConn)
             reader = cmd.ExecuteReader()
             If reader.Read() Then
-
                 Dim QTY_STOCK = reader("qty").ToString()
                 qty_double = CDbl(Val(reader("qty").ToString))
                 new_qty_double = CDbl(Val(new_qty))
@@ -1101,7 +1166,6 @@ LOOP_INSERT:
                 reader.Close()
                 Return "NO_DATA"
             End If
-
         ElseIf l_size = "103" Then
             Dim qty_double As Double = 0.0
             Dim new_qty_double As Double = 0.0
@@ -1285,7 +1349,7 @@ LOOP_INSERT:
                 num += 1
 
                 'MsgBox("data retuen  = " & item_cd)
-                sup_scan_pick_detail(count, wi, item_cd, scan_qty, scan_lot, tag_typ, tag_readed, scan_emp, term_cd, updated_date, updated_by, updated_seq, com_flg_table, tag_remain_qty, Create_date, Create_By)
+                sup_scan_pick_detail(count, wi, item_cd, scan_qty, scan_lot, tag_typ, tag_readed, scan_emp, term_cd, updated_date, updated_by, updated_seq, com_flg_table, tag_remain_qty, Create_date, Create_By, "", "")
             Next
             delete_data_check_qr_part()
         Catch ex As Exception
@@ -1509,6 +1573,8 @@ remain_seq_FW:
                 F_tag_remain_qty.Add(reader.Item(14))
                 F_Create_Date.Add(reader.Item(15))
                 F_Create_By.Add(reader.Item(16))
+                F_Line_cd.Add(reader.Item(18))
+                F_delivery_date.Add(reader.Item(19))
                 count += 1
                 count_arr_fw = count_arr_fw + 1
             Loop
@@ -1532,9 +1598,11 @@ remain_seq_FW:
                 Dim tag_remain_qty As String = F_tag_remain_qty(num)
                 Dim Create_date As String = F_Create_Date(num)
                 Dim Create_By As String = F_Create_By(num)
+                Dim Line_cd As String = F_Line_cd(num)
+                Dim delivery_date As String = F_delivery_date(num)
                 num += 1
                 'MsgBox("data retuen  = " & item_cd)
-                sup_scan_pick_detail(count, wi, item_cd, scan_qty, scan_lot, tag_typ, tag_readed, scan_emp, term_cd, updated_date, updated_by, updated_seq, com_flg_table, tag_remain_qty, Create_date, Create_By)
+                sup_scan_pick_detail(count, wi, item_cd, scan_qty, scan_lot, tag_typ, tag_readed, scan_emp, term_cd, updated_date, updated_by, updated_seq, com_flg_table, tag_remain_qty, Create_date, Create_By, Line_cd, delivery_date)
             Next
             delete_data_check_qr_part()
         Catch ex As Exception
@@ -1980,7 +2048,7 @@ loop_check_open_bt:
                 num += 1
 
                 'MsgBox("data retuen  = " & item_cd)
-                sup_scan_pick_detail(count, wi, item_cd, scan_qty, scan_lot, tag_typ, tag_readed, scan_emp, term_cd, updated_date, updated_by, updated_seq, com_flg_table, tag_remain_qty, Create_date, Create_By)
+                sup_scan_pick_detail(count, wi, item_cd, scan_qty, scan_lot, tag_typ, tag_readed, scan_emp, term_cd, updated_date, updated_by, updated_seq, com_flg_table, tag_remain_qty, Create_date, Create_By, "", "")
             Next
             delete_data_check_qr_part()
         Catch ex As Exception
@@ -2173,8 +2241,6 @@ loop_check_open_bt:
         Dim bBufGet As [Byte]() = New [Byte](4094) {}
 
         Try
-
-
             ' Data transmission
             bBuf = New [Byte](4094) {}
             Dim bBufWork As [Byte]() = New [Byte]() {}
@@ -2249,7 +2315,6 @@ loop_check_open_bt:
             len = len + bBufWork.Length
 
 
-
             bESC.CopyTo(bBuf, len)
             len = len + bESC.Length
             bBufWork = System.Text.Encoding.GetEncoding(932).GetBytes("%1")
@@ -2285,7 +2350,7 @@ loop_check_open_bt:
             len = len + bESC.Length
 
             ' bBufWork_l1 = System.Text.Encoding.GetEncoding(932).GetBytes("K2B" & "---")
-
+            '--------------------------------------------------------------------------------'
             bBufWork = System.Text.Encoding.GetEncoding(932).GetBytes("K2B" & "QGate --> FG")
             bBufWork.CopyTo(bBuf, len)
             len = len + bBufWork.Length + bBufWork_l1.Length
@@ -2304,10 +2369,9 @@ loop_check_open_bt:
 
             bESC.CopyTo(bBuf, len)
             len = len + bESC.Length
-            bBufWork = System.Text.Encoding.GetEncoding(932).GetBytes("H90")
+            bBufWork = System.Text.Encoding.GetEncoding(932).GetBytes("H110")
             bBufWork.CopyTo(bBuf, len)
             len = len + bBufWork.Length
-
             bESC.CopyTo(bBuf, len)
             len = len + bESC.Length
             bBufWork = System.Text.Encoding.GetEncoding(932).GetBytes("P00")
@@ -2323,7 +2387,14 @@ loop_check_open_bt:
 
             bESC.CopyTo(bBuf, len)
             len = len + bESC.Length
-            bBufWork = System.Text.Encoding.GetEncoding(932).GetBytes("K9B" & "Part Name:" & Module1.FG_PART_NAME.Substring(12))
+            Dim result_qty As String = "NO_DATA"
+            If tag_qty = "0" Or tag_qty = 0 Then
+                result_qty = Module1.FG_QTY.Substring(6)
+            Else
+                result_qty = tag_qty
+            End If
+
+            bBufWork = System.Text.Encoding.GetEncoding(932).GetBytes("K9B" & "Pick : " & result_qty & " pcs." & "  " & Module1.FG_MODEL)
             bBufWork.CopyTo(bBuf, len)
             len = len + bBufWork.Length
 
@@ -2336,51 +2407,13 @@ loop_check_open_bt:
 
             bESC.CopyTo(bBuf, len)
             len = len + bESC.Length
-            bBufWork = System.Text.Encoding.GetEncoding(932).GetBytes("V700")
+            bBufWork = System.Text.Encoding.GetEncoding(932).GetBytes("V440")
             bBufWork.CopyTo(bBuf, len)
             len = len + bBufWork.Length
 
             bESC.CopyTo(bBuf, len)
             len = len + bESC.Length
-            bBufWork = System.Text.Encoding.GetEncoding(932).GetBytes("H140")
-            bBufWork.CopyTo(bBuf, len)
-            len = len + bBufWork.Length
-
-            bESC.CopyTo(bBuf, len)
-            len = len + bESC.Length
-            bBufWork = System.Text.Encoding.GetEncoding(932).GetBytes("P00")
-            bBufWork.CopyTo(bBuf, len)
-            len = len + bBufWork.Length
-
-            bESC.CopyTo(bBuf, len)
-            len = len + bESC.Length
-            bBufWork = System.Text.Encoding.GetEncoding(932).GetBytes("L0202")
-            bBufWork.CopyTo(bBuf, len)
-            len = len + bBufWork.Length
-            bESC.CopyTo(bBuf, len)
-
-            bESC.CopyTo(bBuf, len)
-            len = len + bESC.Length
-            bBufWork = System.Text.Encoding.GetEncoding(932).GetBytes("K9B" & "Model : " & Module1.FG_MODEL)
-            bBufWork.CopyTo(bBuf, len)
-            len = len + bBufWork.Length
-
-
-            bESC.CopyTo(bBuf, len)
-            len = len + bESC.Length
-            bBufWork = System.Text.Encoding.GetEncoding(932).GetBytes("%1")
-            bBufWork.CopyTo(bBuf, len)
-            len = len + bBufWork.Length
-
-            bESC.CopyTo(bBuf, len)
-            len = len + bESC.Length
-            bBufWork = System.Text.Encoding.GetEncoding(932).GetBytes("V700")
-            bBufWork.CopyTo(bBuf, len)
-            len = len + bBufWork.Length
-
-            bESC.CopyTo(bBuf, len)
-            len = len + bESC.Length
-            bBufWork = System.Text.Encoding.GetEncoding(932).GetBytes("H190")
+            bBufWork = System.Text.Encoding.GetEncoding(932).GetBytes("H180")
             bBufWork.CopyTo(bBuf, len)
             len = len + bBufWork.Length
 
@@ -2392,100 +2425,142 @@ loop_check_open_bt:
 
             bESC.CopyTo(bBuf, len)
             len = len + bESC.Length
-            bBufWork = System.Text.Encoding.GetEncoding(932).GetBytes("L0202")
+            bBufWork = System.Text.Encoding.GetEncoding(932).GetBytes("L0102")
             bBufWork.CopyTo(bBuf, len)
             len = len + bBufWork.Length
             bESC.CopyTo(bBuf, len)
-
             bESC.CopyTo(bBuf, len)
             len = len + bESC.Length
-            bBufWork = System.Text.Encoding.GetEncoding(932).GetBytes("K9B" & "Instruction : XXXXXX")
+            '       bBufWork = System.Text.Encoding.GetEncoding(932).GetBytes("K2B" & "Name : " & "TESTTTTTTTTTTTTTTTTT")
+            Dim del = Module1.delivery_date.Split()
+            bBufWork = System.Text.Encoding.GetEncoding(932).GetBytes("K9B" & "DEL : " & del(0) & " | " & del(1))
             bBufWork.CopyTo(bBuf, len)
             len = len + bBufWork.Length
+            '---------------------------------------------------------------------------------------------------------'
+            'bESC.CopyTo(bBuf, len)
+            'len = len + bESC.Length
+            'bBufWork = System.Text.Encoding.GetEncoding(932).GetBytes("%1")
+            'bBufWork.CopyTo(bBuf, len)
+            'len = len + bBufWork.Length
+
+            'bESC.CopyTo(bBuf, len)
+            '  len = len + bESC.Length
+            '  bBufWork = System.Text.Encoding.GetEncoding(932).GetBytes("V700")
+            '  bBufWork.CopyTo(bBuf, len)
+            '  len = len + bBufWork.Length
+
+            ' bESC.CopyTo(bBuf, len)
+            ' len = len + bESC.Length
+            ' bBufWork = System.Text.Encoding.GetEncoding(932).GetBytes("H190")
+            'bBufWork.CopyTo(bBuf, len)
+            'len = len + bBufWork.Length
+
+            ' bESC.CopyTo(bBuf, len)
+            'len = len + bESC.Length
+            '    bBufWork = System.Text.Encoding.GetEncoding(932).GetBytes("P00")
+            '   bBufWork.CopyTo(bBuf, len)
+            '  len = len + bBufWork.Length
+            
+            ' bESC.CopyTo(bBuf, len)
+            ' len = len + bESC.Length
+            ' bBufWork = System.Text.Encoding.GetEncoding(932).GetBytes("L0202")
+            ' bBufWork.CopyTo(bBuf, len)
+            ' len = len + bBufWork.Length
+            ' bESC.CopyTo(bBuf, len)
+
+            ' bESC.CopyTo(bBuf, len)
+            'len = len + bESC.Length
+            ' bBufWork = System.Text.Encoding.GetEncoding(932).GetBytes("K9B" & "Instruction : XXXXXX")
+            'bBufWork.CopyTo(bBuf, len)
+            'len = len + bBufWork.Length
 
 
 
 
 
-            bESC.CopyTo(bBuf, len)
-            len = len + bESC.Length
-            bBufWork = System.Text.Encoding.GetEncoding(932).GetBytes("%1")
-            bBufWork.CopyTo(bBuf, len)
-            len = len + bBufWork.Length
+            'bESC.CopyTo(bBuf, len)
+            ' len = len + bESC.Length
+            '---------------------------------------------------------------------------------------------------------------------'
+            '           bBufWork = System.Text.Encoding.GetEncoding(932).GetBytes("%1")
+            '          bBufWork.CopyTo(bBuf, len)
+            'len = len + bBufWork.Length
 
-            bESC.CopyTo(bBuf, len)
-            len = len + bESC.Length
-            bBufWork = System.Text.Encoding.GetEncoding(932).GetBytes("V700")
-            bBufWork.CopyTo(bBuf, len)
-            len = len + bBufWork.Length
+            '            bESC.CopyTo(bBuf, len)
+            'len = len + bESC.Length
+            'bBufWork = System.Text.Encoding.GetEncoding(932).GetBytes("V700")
+            'bBufWork.CopyTo(bBuf, len)
+            'len = len + bBufWork.Length
 
-            bESC.CopyTo(bBuf, len)
-            len = len + bESC.Length
+            'bESC.CopyTo(bBuf, len)
+            'len = len + bESC.Length
 
-            bBufWork = System.Text.Encoding.GetEncoding(932).GetBytes("H250")
-            bBufWork.CopyTo(bBuf, len)
-            len = len + bBufWork.Length
+            'bBufWork = System.Text.Encoding.GetEncoding(932).GetBytes("H250")
+            'bBufWork.CopyTo(bBuf, len)
+            'len = len + bBufWork.Length
 
-            bESC.CopyTo(bBuf, len)
-            len = len + bESC.Length
-            bBufWork = System.Text.Encoding.GetEncoding(932).GetBytes("P00")
-            bBufWork.CopyTo(bBuf, len)
-            len = len + bBufWork.Length
+            '  bESC.CopyTo(bBuf, len)
+            ' len = len + bESC.Length
+            '    bBufWork = System.Text.Encoding.GetEncoding(932).GetBytes("P00")
+            '   bBufWork.CopyTo(bBuf, len)
+            '     len = len + bBufWork.Length
 
-            bESC.CopyTo(bBuf, len)
-            len = len + bESC.Length
-            bBufWork = System.Text.Encoding.GetEncoding(932).GetBytes("L0202")
-            bBufWork.CopyTo(bBuf, len)
-            len = len + bBufWork.Length
-            bESC.CopyTo(bBuf, len)
+            '       bESC.CopyTo(bBuf, len)
+            '      len = len + bESC.Length
+            '        bBufWork = System.Text.Encoding.GetEncoding(932).GetBytes("L0202")
+            '         bBufWork.CopyTo(bBuf, len)
+            '           len = len + bBufWork.Length
+            '          bESC.CopyTo(bBuf, len)
+            '
+            'bESC.CopyTo(bBuf, len)
+            'len = len + bESC.Length
+            'Dim result_qty As Integer = 0
+            'If tag_qty = "0" Or tag_qty = 0 Then
+            '    result_qty = Module1.FG_QTY.Substring(6)
+            ' Else
+            '      result_qty = tag_qty
+            '   End If
 
-            bESC.CopyTo(bBuf, len)
-            len = len + bESC.Length
-            bBufWork = System.Text.Encoding.GetEncoding(932).GetBytes("K9B" & "Supply QTY. : " & tag_qty)
-            bBufWork.CopyTo(bBuf, len)
-            len = len + bBufWork.Length
+            '    bBufWork = System.Text.Encoding.GetEncoding(932).GetBytes("K9B" & "Supply QTY. : " & result_qty)
+            '     bBufWork.CopyTo(bBuf, len)
+            '      len = len + bBufWork.Length
 
 
-            bESC.CopyTo(bBuf, len)
-            len = len + bESC.Length
-            'bBufWork = System.Text.Encoding.GetEncoding(932).GetBytes("V20")
-            bBufWork = System.Text.Encoding.GetEncoding(932).GetBytes("%1")
-            bBufWork.CopyTo(bBuf, len)
-            len = len + bBufWork.Length
+            '    bESC.CopyTo(bBuf, len)
+            '   len = len + bESC.Length
+            '  bBufWork = System.Text.Encoding.GetEncoding(932).GetBytes("%1")
+            ' bBufWork.CopyTo(bBuf, len)
+            'len = len + bBufWork.Length
 
-            bESC.CopyTo(bBuf, len)
-            len = len + bESC.Length
-            'bBufWork = System.Text.Encoding.GetEncoding(932).GetBytes("V20")
-            bBufWork = System.Text.Encoding.GetEncoding(932).GetBytes("V700")
-            bBufWork.CopyTo(bBuf, len)
-            len = len + bBufWork.Length
+            'bESC.CopyTo(bBuf, len)
+            'len = len + bESC.Length
+            'bBufWork = System.Text.Encoding.GetEncoding(932).GetBytes("V700")
+            'bBufWork.CopyTo(bBuf, len)
+            'len = len + bBufWork.Length
 
-            bESC.CopyTo(bBuf, len)
-            len = len + bESC.Length
-            'bBufWork = System.Text.Encoding.GetEncoding(932).GetBytes("H10")
-            bBufWork = System.Text.Encoding.GetEncoding(932).GetBytes("H300")
-            bBufWork.CopyTo(bBuf, len)
-            len = len + bBufWork.Length
+            'bESC.CopyTo(bBuf, len)
+            'len = len + bESC.Length
+            'bBufWork = System.Text.Encoding.GetEncoding(932).GetBytes("H300")
+            'bBufWork.CopyTo(bBuf, len)
+            'len = len + bBufWork.Length
 
-            bESC.CopyTo(bBuf, len)
-            len = len + bESC.Length
-            bBufWork = System.Text.Encoding.GetEncoding(932).GetBytes("P00")
-            bBufWork.CopyTo(bBuf, len)
-            len = len + bBufWork.Length
+            'bESC.CopyTo(bBuf, len)
+            'len = len + bESC.Length
+            'bBufWork = System.Text.Encoding.GetEncoding(932).GetBytes("P00")
+            'bBufWork.CopyTo(bBuf, len)
+            'len = len + bBufWork.Length
 
-            bESC.CopyTo(bBuf, len)
-            len = len + bESC.Length
-            bBufWork = System.Text.Encoding.GetEncoding(932).GetBytes("L0202")
-            bBufWork.CopyTo(bBuf, len)
-            len = len + bBufWork.Length
-            bESC.CopyTo(bBuf, len)
+            'bESC.CopyTo(bBuf, len)
+            'len = len + bESC.Length
+            'bBufWork = System.Text.Encoding.GetEncoding(932).GetBytes("L0202")
+            'bBufWork.CopyTo(bBuf, len)
+            'len = len + bBufWork.Length
+            'bESC.CopyTo(bBuf, len)
 
-            bESC.CopyTo(bBuf, len)
-            len = len + bESC.Length
-            'bBufWork = System.Text.Encoding.GetEncoding(932).GetBytes("K9B" & data)
-            bBufWork = System.Text.Encoding.GetEncoding(932).GetBytes("K9B" & "Line : " & line_detail)
-            bBufWork.CopyTo(bBuf, len)
-            len = len + bBufWork.Length
+            'bESC.CopyTo(bBuf, len)
+            'len = len + bESC.Length
+            'bBufWork = System.Text.Encoding.GetEncoding(932).GetBytes("K9B" & "Trip : " & Module1.Trip)
+            'bBufWork.CopyTo(bBuf, len)
+            'len = len + bBufWork.Length
 
 
 
@@ -2528,8 +2603,42 @@ loop_check_open_bt:
 
 
             '--------------------------------------------------------------------------------------'
+            '         bESC.CopyTo(bBuf, len)
+            '        len = len + bESC.Length
+            '       bBufWork = System.Text.Encoding.GetEncoding(932).GetBytes("%1")
+            '           bBufWork.CopyTo(bBuf, len)
+            '          len = len + bBufWork.Length
 
+            '            bESC.CopyTo(bBuf, len)
+            'len = len + bESC.Length
+            'bBufWork = System.Text.Encoding.GetEncoding(932).GetBytes("V700")
+            'bBufWork.CopyTo(bBuf, len)
+            'len = len + bBufWork.Length
 
+            'bESC.CopyTo(bBuf, len)
+            'len = len + bESC.Length
+            'bBufWork = System.Text.Encoding.GetEncoding(932).GetBytes("H350")
+            'bBufWork.CopyTo(bBuf, len)
+            'len = len + bBufWork.Length
+
+            'bESC.CopyTo(bBuf, len)
+            'len = len + bESC.Length
+            'bBufWork = System.Text.Encoding.GetEncoding(932).GetBytes("P00")
+            'bBufWork.CopyTo(bBuf, len)
+            'len = len + bBufWork.Length
+
+            'bESC.CopyTo(bBuf, len)
+            'len = len + bESC.Length
+            'bBufWork = System.Text.Encoding.GetEncoding(932).GetBytes("L0101")
+            'bBufWork.CopyTo(bBuf, len)
+            'len = len + bBufWork.Length
+            'bESC.CopyTo(bBuf, len)
+            'bESC.CopyTo(bBuf, len)
+            'len = len + bESC.Length
+            'bBufWork = System.Text.Encoding.GetEncoding(932).GetBytes("K2B" & "Delivery Date : " & Module1.delivery_date)
+            'bBufWork.CopyTo(bBuf, len)
+            'len = len + bBufWork.Length
+            '-------------------------------------------------------------------------------------------------------------'
             bESC.CopyTo(bBuf, len)
             len = len + bESC.Length
             bBufWork = System.Text.Encoding.GetEncoding(932).GetBytes("%1")
@@ -2538,13 +2647,13 @@ loop_check_open_bt:
 
             bESC.CopyTo(bBuf, len)
             len = len + bESC.Length
-            bBufWork = System.Text.Encoding.GetEncoding(932).GetBytes("V700")
+            bBufWork = System.Text.Encoding.GetEncoding(932).GetBytes("V440")
             bBufWork.CopyTo(bBuf, len)
             len = len + bBufWork.Length
 
             bESC.CopyTo(bBuf, len)
             len = len + bESC.Length
-            bBufWork = System.Text.Encoding.GetEncoding(932).GetBytes("H405")
+            bBufWork = System.Text.Encoding.GetEncoding(932).GetBytes("H260")
             bBufWork.CopyTo(bBuf, len)
             len = len + bBufWork.Length
 
@@ -2556,16 +2665,54 @@ loop_check_open_bt:
 
             bESC.CopyTo(bBuf, len)
             len = len + bESC.Length
-            bBufWork = System.Text.Encoding.GetEncoding(932).GetBytes("L0101")
+            bBufWork = System.Text.Encoding.GetEncoding(932).GetBytes("L0299")
             bBufWork.CopyTo(bBuf, len)
             len = len + bBufWork.Length
             bESC.CopyTo(bBuf, len)
             bESC.CopyTo(bBuf, len)
             len = len + bESC.Length
-            bBufWork = System.Text.Encoding.GetEncoding(932).GetBytes("K2B" & "Date : " & date_detail & " " & "TIME : " & time_detail & " " & "User : " & user_detail)
+            '   bBufWork = System.Text.Encoding.GetEncoding(932).GetBytes("K2B" & "Model : " & "HONDA")
+
+            bBufWork = System.Text.Encoding.GetEncoding(932).GetBytes("K2B" & "Pick Date : " & date_detail & " " & "| " & time_detail)
             bBufWork.CopyTo(bBuf, len)
             len = len + bBufWork.Length
             '---------------------------------------------------------------------------------------'
+            bESC.CopyTo(bBuf, len)
+            len = len + bESC.Length
+            bBufWork = System.Text.Encoding.GetEncoding(932).GetBytes("%1")
+            bBufWork.CopyTo(bBuf, len)
+            len = len + bBufWork.Length
+
+            bESC.CopyTo(bBuf, len)
+            len = len + bESC.Length
+            bBufWork = System.Text.Encoding.GetEncoding(932).GetBytes("V440")
+            bBufWork.CopyTo(bBuf, len)
+            len = len + bBufWork.Length
+
+            bESC.CopyTo(bBuf, len)
+            len = len + bESC.Length
+            bBufWork = System.Text.Encoding.GetEncoding(932).GetBytes("H340")
+            bBufWork.CopyTo(bBuf, len)
+            len = len + bBufWork.Length
+
+            bESC.CopyTo(bBuf, len)
+            len = len + bESC.Length
+            bBufWork = System.Text.Encoding.GetEncoding(932).GetBytes("P00")
+            bBufWork.CopyTo(bBuf, len)
+            len = len + bBufWork.Length
+
+            bESC.CopyTo(bBuf, len)
+            len = len + bESC.Length
+            bBufWork = System.Text.Encoding.GetEncoding(932).GetBytes("L0299")
+            bBufWork.CopyTo(bBuf, len)
+            len = len + bBufWork.Length
+            bESC.CopyTo(bBuf, len)
+            bESC.CopyTo(bBuf, len)
+            len = len + bESC.Length
+            bBufWork = System.Text.Encoding.GetEncoding(932).GetBytes("K2B" & "Pick By : " & user_detail)
+            bBufWork.CopyTo(bBuf, len)
+            len = len + bBufWork.Length
+            '----------------------------------------------------------------------------------------'
             If CodeType = "C128" Then
                 ''// barcode
                 bESC.CopyTo(bBuf, len)
@@ -2590,19 +2737,19 @@ loop_check_open_bt:
                 '// QR code
                 bESC.CopyTo(bBuf, len)
                 len = len + bESC.Length
-                bBufWork = System.Text.Encoding.GetEncoding(932).GetBytes("V200")
+                bBufWork = System.Text.Encoding.GetEncoding(932).GetBytes("V700")
                 bBufWork.CopyTo(bBuf, len)
                 len = len + bBufWork.Length
 
                 bESC.CopyTo(bBuf, len)
                 len = len + bESC.Length
-                bBufWork = System.Text.Encoding.GetEncoding(932).GetBytes("H220")
+                bBufWork = System.Text.Encoding.GetEncoding(932).GetBytes("H170")
                 bBufWork.CopyTo(bBuf, len)
                 len = len + bBufWork.Length
 
                 bESC.CopyTo(bBuf, len)
                 len = len + bESC.Length
-                bBufWork = System.Text.Encoding.GetEncoding(932).GetBytes("2D30,M,04,0,0") '// qr setting
+                bBufWork = System.Text.Encoding.GetEncoding(932).GetBytes("2D30,M,7,0,0") '// qr setting
                 bBufWork.CopyTo(bBuf, len)
                 len = len + bBufWork.Length
 
@@ -2620,13 +2767,13 @@ loop_check_open_bt:
 
                 bESC.CopyTo(bBuf, len)
                 len = len + bESC.Length
-                bBufWork = System.Text.Encoding.GetEncoding(932).GetBytes("V230")
+                bBufWork = System.Text.Encoding.GetEncoding(932).GetBytes("V210")
                 bBufWork.CopyTo(bBuf, len)
                 len = len + bBufWork.Length
 
                 bESC.CopyTo(bBuf, len)
                 len = len + bESC.Length
-                bBufWork = System.Text.Encoding.GetEncoding(932).GetBytes("H360")
+                bBufWork = System.Text.Encoding.GetEncoding(932).GetBytes("H400")
                 bBufWork.CopyTo(bBuf, len)
                 len = len + bBufWork.Length
 
@@ -4338,13 +4485,24 @@ L_END2:
                 plan_seq = scan_qty.Text.Substring(16, 3)
                 lot_sep = scan_qty.Text.Substring(58, 4)
                 tag_number = scan_qty.Text.Substring(100, 3)
-                tag_seq = plan_seq + lot_sep + tag_number
+                tag_seq = scan_qty.Text.Substring(87, 16) 'plan_seq + lot_sep + tag_number
+                Dim check_arr = tag_seq.Split(" ")
+                Dim i As Integer = 0
+                For Each value As String In check_arr
+                    'MsgBox(i)
+                    If check_arr(i) <> "" Then
+                        tag_seq = check_arr(i)
+                        GoTo out
+                    End If
+                    i = i + 1
+                Next
+out:
                 order_number = scan_qty.Text.Substring(58, 4) 'LOT FA'
             ElseIf Len_length = 62 Then 'web post'
                 order_number = scan_qty.Text.Substring(2, 10)
                 tag_seq = scan_qty.Text.Substring(59, 3)
             End If
-            Dim strCommand As String = "SELECT COUNT(id) as c, com_flg  as com_flg , id as i  , scan_qty as qty FROM check_qr_part  where item_cd = '" & Module1.FG_PART_CD.Substring(16) & "' and scan_lot = '" & order_number & "' and tag_seq = '" & tag_seq & "' group by com_flg , id , scan_qty"
+            Dim strCommand As String = "SELECT COUNT(id) as c, com_flg  as com_flg , id as i  , scan_qty as qty FROM check_qr_part  where item_cd = '" & Module1.FG_PART_CD.Substring(16) & "' and scan_lot = '" & order_number & "' and tag_seq = '" & tag_seq & "' and line_cd = '" & scan_qty.Text.Substring(2, 6) & "'group by com_flg , id , scan_qty"
             'MsgBox("strCommand = " & strCommand)
             Dim command As SqlCommand = New SqlCommand(strCommand, myConn)
             reader = command.ExecuteReader()
@@ -4418,7 +4576,19 @@ L_END2:
                 tag_number = scan_qty.Text.Substring(100, 3)
                 'MsgBox("OK0_5")
                 'MsgBox("OK0_6")
-                tag_seq = plan_seq & lot_sep & tag_number
+
+                tag_seq = scan_qr.Substring(87, 16) 'plan_seq & lot_sep & tag_number
+                Dim check_arr = tag_seq.Split(" ")
+                Dim i As Integer = 0
+                For Each value As String In check_arr
+                    'MsgBox(i)
+                    If check_arr(i) <> "" Then
+                        tag_seq = check_arr(i)
+                        GoTo out
+                    End If
+                    i = i + 1
+                Next
+out:
                 order_number = scan_qty.Text.Substring(58, 4) 'LOT FA'
                 'MsgBox("OK0_7")
             ElseIf Len_length = 62 Then 'web post'
@@ -4504,7 +4674,7 @@ L_END2:
             Module1.show_data_supply += text_tmp.Text
             set_show_remain() 'show RM'
             set_show_supply()
-            strCommand2 = "INSERT INTO check_qr_part (wi,item_cd,scan_qty,scan_lot,tag_typ,tag_readed,scan_emp,term_cd,updated_date,updated_by,tag_seq,S_number , com_flg ,tag_remain_qty  , CREATE_DATE , CREATE_BY , MENU_ID) VALUES ('" & Module1.FG_CUS_ORDER_ID & "','" & Module1.FG_PART_CD.Substring(16) & "','" & text_tmp.Text & "','" & order_number & "','1','" & scan_qr & "','" & Module1.A_USER_ID & "','" & S_number & "','" & date_now & "','" & Module1.A_USER_ID & "','" & tag_seq & "','" & S_number & "','" & com_flg & "','" & t & "' , '" & date_now & "' , '" & Module1.A_USER_ID & "', '" & Module1.MENU_ID & "')"
+            strCommand2 = "INSERT INTO check_qr_part (wi,item_cd,scan_qty,scan_lot,tag_typ,tag_readed,scan_emp,term_cd,updated_date,updated_by,tag_seq,S_number , com_flg ,tag_remain_qty  , CREATE_DATE , CREATE_BY , MENU_ID , line_cd , Delivery_date , SLIP_CD) VALUES ('" & Module1.FG_CUS_ORDER_ID & "','" & Module1.FG_PART_CD.Substring(16) & "','" & text_tmp.Text & "','" & order_number & "','1','" & scan_qr & "','" & Module1.A_USER_ID & "','" & S_number & "','" & date_now & "','" & Module1.A_USER_ID & "','" & tag_seq & "','" & S_number & "','" & com_flg & "','" & t & "' , '" & date_now & "' , '" & Module1.A_USER_ID & "', '" & Module1.MENU_ID & "' , '" & scan_qty.Text.Substring(2, 6) & "' , '" & Module1.delivery_date & "' , '" & Module1.SLIP_CD & "')"
             'MsgBox(strCommand2)
             Dim command2 As SqlCommand = New SqlCommand(strCommand2, myConn)
             reader = command2.ExecuteReader()
@@ -4525,7 +4695,7 @@ L_END2:
             MsgBox(strCommand2)
         End Try
     End Sub
-    Public Function sup_scan_pick_detail(ByVal count As String, ByVal F_wi As String, ByVal F_item_cd As String, ByVal scan_qty As String, ByVal scan_lot As String, ByVal tag_typ As String, ByVal tag_readed As String, ByVal scan_emp As String, ByVal term_cd As String, ByVal updated_date As String, ByVal updated_by As String, ByVal updated_seq As String, ByVal com_flg_table As String, ByVal tag_remain_qty As String, ByVal create_date As String, ByVal create_by As String)
+    Public Function sup_scan_pick_detail(ByVal count As String, ByVal F_wi As String, ByVal F_item_cd As String, ByVal scan_qty As String, ByVal scan_lot As String, ByVal tag_typ As String, ByVal tag_readed As String, ByVal scan_emp As String, ByVal term_cd As String, ByVal updated_date As String, ByVal updated_by As String, ByVal updated_seq As String, ByVal com_flg_table As String, ByVal tag_remain_qty As String, ByVal create_date As String, ByVal create_by As String, ByVal line_cd As String, ByVal delivery_date As String)
         ', ByVal F_item_cd As String, ByVal F_scan_qty As String, ByVal F_scan_lot As String, ByVal F_tag_typ As String, ByVal F_tag_readed As String, ByVal F_scan_emp As String, ByVal F_term_cd As String, ByVal F_updated_date As String, ByVal F_updated_by As String, ByVal F_updated_seq As String, ByVal com_flg As String, ByVal total_qty As String
         Dim Len_length As Integer = length
         Dim strCommand2 As String = "no data"
@@ -4546,12 +4716,11 @@ L_END2:
                         For Each key3 In Module1.arr_check_QTY_scan
                             brak_loop = brak_loop + 1
                         Next
-
                         FW_Cut_stock_frith_in_out(PO, F_item_cd, scan_qty, tag_readed, updated_seq, com_flg_table, tag_remain_qty, scan_lot)
                     End If
                 End If
             Else
-                strCommand2 = "INSERT INTO sup_scan_pick_detail (wi , item_cd , scan_qty ,scan_lot , tag_typ , tag_readed , scan_emp, term_cd , updated_date , updated_by , tag_seq  , com_flg , tag_remain_qty , CREATE_DATE , CREATE_BY , MENU_ID) VALUES ('" & F_wi & "' ,'" & F_item_cd & "','" & scan_qty & "' ,'" & scan_lot & "','" & tag_typ & "','" & tag_readed & "','" & scan_emp & "','" & term_cd & "','" & updated_date & "','" & updated_by & "','" & updated_seq & "','" & com_flg_table & "','" & tag_remain_qty & "' , '" & create_date & "' , '" & create_by & "', '" & Module1.MENU_ID & "')"
+                strCommand2 = "INSERT INTO sup_scan_pick_detail (wi , item_cd , scan_qty ,scan_lot , tag_typ , tag_readed , scan_emp, term_cd , updated_date , updated_by , tag_seq  , com_flg , tag_remain_qty , CREATE_DATE , CREATE_BY , MENU_ID , line_cd , delivery_date , SLIP_CD) VALUES ('" & F_wi & "' ,'" & F_item_cd & "','" & scan_qty & "' ,'" & scan_lot & "','" & tag_typ & "','" & tag_readed & "','" & scan_emp & "','" & term_cd & "','" & updated_date & "','" & updated_by & "','" & updated_seq & "','" & com_flg_table & "','" & tag_remain_qty & "' , '" & create_date & "' , '" & create_by & "', '" & Module1.MENU_ID & "' , '" & line_cd & "', '" & delivery_date & "' , '" & Module1.SLIP_CD & "')"
                 Dim command2 As SqlCommand = New SqlCommand(strCommand2, myConn)
                 reader = command2.ExecuteReader()
                 reader.Close()
@@ -4900,7 +5069,18 @@ L_END2:
             plan_seq = scan_qty.Text.Substring(16, 3)
             lot_sep = scan_qty.Text.Substring(58, 4)
             tag_number = scan_qty.Text.Substring(100, 3)
-            tag_seq = plan_seq + lot_sep + tag_number
+            tag_seq = scan_qty.Text.Substring(87, 16) 'plan_seq + lot_sep + tag_number
+            Dim check_arr = tag_seq.Split(" ")
+            Dim i As Integer = 0
+            For Each value As String In check_arr
+                'MsgBox(i)
+                If check_arr(i) <> "" Then
+                    tag_seq = check_arr(i)
+                    GoTo out
+                End If
+                i = i + 1
+            Next
+out:
             order_number = scan_qty.Text.Substring(58, 4) 'LOT FA'
             qty = scan_qty.Text.Substring(52, 6)
         ElseIf Len_length = 62 Then 'web post'
@@ -4912,7 +5092,7 @@ L_END2:
         Dim check_com_flg As String = "NO_DATA"
         Dim id As String = "NO_DATA"
         'reader.Close()
-        Dim strCommand As String = "SELECT COUNT(id) as c, com_flg  as com_flg   FROM check_qr_part   where item_cd = '" & Module1.A_PAST_NO & "' and scan_lot = '" & order_number & "' and tag_seq = '" & tag_seq & "' and com_flg = '1' group by com_flg"
+        Dim strCommand As String = "SELECT COUNT(id) as c, com_flg  as com_flg   FROM check_qr_part   where item_cd = '" & Module1.A_PAST_NO & "' and scan_lot = '" & order_number & "' and tag_seq = '" & tag_seq & "' and line_cd = '" & scan_qty.Text.Substring(2, 6) & "'and com_flg = '1' group by com_flg"
         Dim command As SqlCommand = New SqlCommand(strCommand, myConn)
         reader = command.ExecuteReader()
         ' MsgBox("strCommand == >" & strCommand)
@@ -5198,6 +5378,11 @@ L_END2:
             End If
             'Next
         End If
+        If check_FA_TAG_FG() = False Then
+            status = 4
+        ElseIf check_FA_TAG_FG() = 1 Then
+            status = 5
+        End If
         'MsgBox("status = " & status)
         Return status
     End Function
@@ -5232,6 +5417,10 @@ L_END2:
     End Sub
     Public Sub next_image(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles text_box_success.KeyDown
         Select Case e.KeyCode
+            Case System.Windows.Forms.Keys.F3
+                Panel7.Visible = False
+                alert_success.Visible = False
+                'MsgBox("PRIVATE")
             Case System.Windows.Forms.Keys.Enter
                 If check_process = "OK" Then
                     status_alert_image = ""
@@ -5239,8 +5428,6 @@ L_END2:
                     Select_plan_fg.Show()
                     Me.Close()
                 End If
-
-
                 If leng_scan_qty = 62 Then
                     If bool_check_scan = "scan_ok_pickdetail" Then
                         Panel7.Visible = False
@@ -5384,7 +5571,6 @@ L_END2:
                         stLed.dwOff = 100
                         stLed.dwCount = 2
                         stLed.bColor = Bt.LibDef.BT_LED_MAGENTA
-
                         Bt.SysLib.Device.btBuzzer(1, stBuz)
                         Bt.SysLib.Device.btVibrator(1, stVib)
                         Bt.SysLib.Device.btLED(1, stLed)
@@ -5655,6 +5841,35 @@ L_END2:
                         'text_tmp.Text = Module1.SCAN_QTY_TOTAL
                         Panel7.Visible = False
                         alert_loop.Visible = False
+                        If text_tmp.Text = "0" Then
+                            text_tmp.Text = 0
+                        Else
+                            text_tmp.Text = scan_qty_total
+                        End If
+                        scan_qty.Text = ""
+                        scan_qty.Focus()
+                    ElseIf bool_check_scan = "NO_data_tranfer" Then
+                        Dim stBuz As New Bt.LibDef.BT_BUZZER_PARAM()
+                        Dim stVib As New Bt.LibDef.BT_VIBRATOR_PARAM()
+                        Dim stLed As New Bt.LibDef.BT_LED_PARAM()
+                        stBuz.dwOn = 200
+                        stBuz.dwOff = 100
+                        stBuz.dwCount = 2
+                        stBuz.bVolume = 3
+                        stBuz.bTone = 1
+                        stVib.dwOn = 200
+                        stVib.dwOff = 100
+                        stVib.dwCount = 2
+                        stLed.dwOn = 200
+                        stLed.dwOff = 100
+                        stLed.dwCount = 2
+                        stLed.bColor = Bt.LibDef.BT_LED_MAGENTA
+                        Bt.SysLib.Device.btBuzzer(1, stBuz)
+                        Bt.SysLib.Device.btVibrator(1, stVib)
+                        Bt.SysLib.Device.btLED(1, stLed)
+                        'text_tmp.Text = Module1.SCAN_QTY_TOTAL
+                        Panel7.Visible = False
+                        alert_no_tranfer_data.Visible = False
                         If text_tmp.Text = "0" Then
                             text_tmp.Text = 0
                         Else
@@ -6714,7 +6929,6 @@ Exit_count2:
 
                 disp = "Printing Successfully."
                 MessageBox.Show(disp, "Printing complete")
-
                 '// Append scanlog file
                 Dim sw As New System.IO.StreamWriter(htlogfile, True, System.Text.Encoding.GetEncoding("Shift_JIS"))
 
@@ -6755,6 +6969,7 @@ L_END2:
     Private Sub Panel5_GotFocus(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Panel5.GotFocus
 
     End Sub
+
     Public Sub insert_pick_log(ByVal REMAIN_ID As String, ByVal F_wi As String, ByVal used_qty As Double, ByVal create_date As String, ByVal create_by As String, ByVal updated_date As String, ByVal updated_by As String, ByVal scan_lot As String, ByVal updated_seq As String, ByVal F_item_cd As String)
         Try
             Dim strCommand123 As String = "SELECT   id as i   FROM sup_scan_pick_detail  where scan_lot = '" & scan_lot & "' and tag_seq = '" & updated_seq & "'  and item_cd ='" & F_item_cd & "'"
@@ -6791,15 +7006,80 @@ L_END2:
             Dim data_key_up = "NO_DATA"
             If tag_read.Substring(73, 2) = "E2" Then
                 Dim arr_qty = tag_read.Split(" ")
-                data_key_up = arr_qty(30)
+                If tag_read.Substring(30, 2) = "E2" And tag_read.Substring(73, 2) = "E2" Then
+                    data_key_up = arr_qty(28)
+                ElseIf tag_read.Substring(73, 2) = "E2" Then
+                    data_key_up = arr_qty(30)
+                Else
+                    data_key_up = arr_qty(32)
+                End If
             ElseIf tag_read.Substring(73, 2) = "E " Then
                 Dim arr_qty = tag_read.Split(" ")
                 data_key_up = arr_qty(31)
             Else
+                'MsgBox("READY")
                 Dim arr_qty = tag_read.Split(" ")
-                data_key_up = arr_qty(32)
+                'MsgBox("READY2")
+                'MsgBox(tag_read.Substring(56, 1))
+                'MsgBox("end")
+                If tag_read.Substring(56, 1) <> " " Then
+                    'MsgBox("INto")
+                    Try
+                        If F_item_cd.Substring(11, 1) = "G" Then
+                            data_key_up = arr_qty(31)
+                        Else
+                            data_key_up = arr_qty(32)
+                            MsgBox(arr_qty(32))
+                            'MsgBox("INto2")
+                        End If
+                    Catch ex As Exception
+                        data_key_up = arr_qty(32)
+                    End Try
+
+                Else
+                    'MsgBox("OUT")
+                    data_key_up = arr_qty(33)
+                    'MsgBox(arr_qty(33))
+                    'MsgBox("OUT2")
+                End If
             End If
-            Dim get_id_log = "select * from FA_TAG_FG where ITEM_CD = '" & F_item_cd & "' AND TAG_SEQ = '" & updated_seq.Substring(0, 3) & "'AND LOT_NO = '" & scan_lot & "' and KEY_UP = '" & data_key_up & "'"
+            'MsgBox("0")
+            Dim SEQ = "NO_DATA"
+            If tag_read.Substring(94, 1) <> " " Then
+                SEQ = updated_seq.Substring(8, 3)
+            End If
+            'MsgBox("1")
+            If tag_read.Substring(94, 1) = " " Then
+                'MsgBox("2")
+                data_key_up = tag_read.Substring(95, 8)
+                'MsgBox("3")
+                SEQ = tag_read.Substring(95, 3)
+                'MsgBox("4")
+                'MsgBox("---->>>>>" & tag_read.Substring(95, 1))
+                'MsgBox("5")
+                If tag_read.Substring(95, 1) = " " Then
+                    'MsgBox("--->")
+                    data_key_up = data_key_up.Substring(3)
+                    ' MsgBox("-----<")
+                    SEQ = " "
+                End If
+            End If
+            'MsgBox("7")
+            'MsgBox(" item_cd = " & F_item_cd)
+            'MsgBox("SEQ  = " & SEQ)
+            'MsgBox("LOT  = " & scan_lot)
+            'MsgBox("data_key_up = " & data_key_up)
+            'MsgBox(F_item_cd)
+            Try
+                If F_item_cd.Substring(11, 1) = "G" Then
+                    F_item_cd = F_item_cd.Substring(0, 11)
+                End If
+            Catch ex As Exception
+
+            End Try
+            
+            Dim get_id_log = "select * from FA_TAG_FG where ITEM_CD = '" & F_item_cd & "' AND TAG_SEQ = '" & SEQ & "'AND LOT_NO = '" & scan_lot & "' and KEY_UP = '" & data_key_up & "' and LINE_CD = '" & tag_read.Substring(2, 6) & "'"
+            'MsgBox(get_id_log)
             Dim cmd_get As SqlCommand = New SqlCommand(get_id_log, myConn_fa)
             reader = cmd_get.ExecuteReader()
             Dim update_qty As Double = 0.0
@@ -6807,14 +7087,16 @@ L_END2:
                 update_qty = CDbl(Val(reader("TAG_QTY").ToString())) - CDbl(Val(used_qty))
             End If
             reader.Close()
+            'MsgBox("update_qty = " & update_qty)
             Dim FLG_STATUS As String = "0"
             If update_qty <= 0 Then
                 update_qty = 0
-                FLG_STATUS = "0"
-            Else
                 FLG_STATUS = "1"
+            Else
+                FLG_STATUS = "2"
             End If
-            Dim str_update_qty = "EXEC [dbo].[cut_stock_pick_fg] @qty = '" & update_qty & "'  , @flg_status = '" & FLG_STATUS & "' , @item_cd = '" & F_item_cd & "' , @seq = '" & updated_seq.Substring(0, 3) & "' , @lot = '" & scan_lot & "' , @KEY_UP = '" & data_key_up & "'"
+            Dim str_update_qty = "EXEC [dbo].[cut_stock_pick_fg] @qty = '" & used_qty & "'  , @flg_status = '" & FLG_STATUS & "' , @item_cd = '" & F_item_cd & "' , @seq = '" & SEQ & "' , @lot = '" & scan_lot & "' , @KEY_UP = '" & data_key_up & "' , @LINE_CD = '" & tag_read.Substring(2, 6) & "'"
+            'MsgBox(str_update_qty)
             Dim cmd_update As SqlCommand = New SqlCommand(str_update_qty, myConn_fa)
             reader = cmd_update.ExecuteReader()
             reader.Close()
@@ -6823,6 +7105,123 @@ L_END2:
             MsgBox("FAILL cut_stock_FASYSTEM" & vbNewLine & ex.Message, "FAILL")
         End Try
     End Sub
+
+    Public Function check_FA_TAG_FG()
+        'MsgBox("111")
+        Try
+            Dim data_key_up As String = ""
+            Dim KEY_UP = scan_qty.Text.Substring(58, 4)
+            Dim SEQ As String = ""
+            'MsgBox("READY ")
+            If scan_qty.Text.Substring(73, 2) = "E2" Then
+                Dim arr_qty = scan_qty.Text.Split(" ")
+                If scan_qty.Text.Substring(30, 2) = "E2" And scan_qty.Text.Substring(73, 2) = "E2" Then
+                    data_key_up = arr_qty(28)
+                ElseIf scan_qty.Text.Substring(73, 2) = "E2" Then
+                    data_key_up = arr_qty(30)
+                Else
+                    data_key_up = arr_qty(32)
+                End If
+                'MsgBox("READY2 ")
+            ElseIf scan_qty.Text.Substring(73, 2) = "E " Then
+                Dim arr_qty = scan_qty.Text.Split(" ")
+                data_key_up = arr_qty(31)
+            Else
+                'MsgBox("READY3")
+                Dim arr_qty = scan_qty.Text.Split(" ")
+                ' MsgBox("---->")
+                If scan_qty.Text.Substring(73, 1) = "G" Then
+                    data_key_up = arr_qty(31)
+                    'MsgBox("311111")
+                ElseIf scan_qty.Text.Substring(56, 1) <> " " Then
+                    data_key_up = arr_qty(32)
+                    ' MsgBox("set2")
+                Else
+                    data_key_up = arr_qty(33)
+                End If
+            End If
+            'MsgBox("READY4")
+            ' MsgBox("01")
+            Dim ITEM_CD = ""
+            Dim lot_sep = ""
+            'MsgBox("00")
+            If scan_qty.Text.Substring(94, 1) <> " " Then
+                Dim arr_item_cd = scan_qty.Text.Split(" ")
+                'MsgBox("01")
+                ITEM_CD = arr_item_cd(0).Substring(19)
+                'MsgBox("02")
+                lot_sep = scan_qty.Text.Substring(58, 4)
+            Else
+                Dim arr_item_cd = scan_qty.Text.Split(" ")
+                ' MsgBox("0000")
+                ITEM_CD = arr_item_cd(11)
+                '  MsgBox("11111")
+                lot_sep = scan_qty.Text.Substring(58, 4)
+            End If
+            'MsgBox("03")
+            If scan_qty.Text.Substring(94, 1) <> " " Then
+                'MsgBox("SEQ")
+                SEQ = data_key_up.Substring(8, 3)
+                'MsgBox("SEQ2")
+            End If
+            'MsgBox("---0")
+            If scan_qty.Text.Substring(94, 1) = " " Then 'ตรวจสอบ TAG ว่าเป็น TAG REPRINT หรือไม่'
+                ' MsgBox("SEQ3")
+                If scan_qty.Text.Substring(95, 1) <> " " Then 'reprint ถูก'
+                    'MsgBox("SEQ4")
+                    data_key_up = scan_qty.Text.Substring(95, 8)
+                    'MsgBox("SEQ5")
+                    SEQ = scan_qty.Text.Substring(95, 3)
+                    'MsgBox("SEQ6")
+                End If
+                Dim check_arr = data_key_up.Split(" ")
+                'MsgBox("SEQ7")
+                Dim i As Integer = 0
+                If scan_qty.Text.Substring(95, 1) = " " Then 'TAG REPRINT ผิด'
+                    '     MsgBox("SEQ8")
+                    '      MsgBox(scan_qty.Text.Substring(98, 5))
+                    data_key_up = scan_qty.Text.Substring(98, 5) 'ผิดตรงนี้ TAG REPRINT '
+                    SEQ = " "
+                End If
+                '   MsgBox("data_key_up = " & data_key_up)
+            End If
+            'MsgBox("---01")
+            'MsgBox(ITEM_CD)
+            'MsgBox(ITEM_CD.Substring(11, 1))
+            'MsgBox(ITEM_CD.Substring(0, 11))
+            Dim sql As String = "select IND , FLG_STATUS from FA_TAG_FG where LOT_NO = '" & lot_sep & "' and ITEM_CD = '" & ITEM_CD & "' and FLG_STATUS  ='2' and TAG_SEQ = '" & SEQ & "' and LINE_CD = '" & scan_qty.Text.Substring(2, 6) & "' and KEY_UP = '" & data_key_up & "'"
+            'MsgBox(sql)
+            Dim command2 As SqlCommand = New SqlCommand(sql, myConn_fa)
+            reader = command2.ExecuteReader()
+            Dim count As String = "NO_DATA"
+            Dim flg_status As String = "NO_DATA"
+            Do While reader.Read = True
+                count = reader("IND").ToString()
+                flg_status = reader("FLG_STATUS").ToString()
+            Loop
+            reader.Close()
+            'MsgBox(count)
+            'MsgBox(flg_status)
+            If count <> "NO_DATA" Then
+                If flg_status <> "2" Then
+                    'bool_check_scan = "ever"
+                    'Module1.check_count = 1
+                    '       MsgBox("1")
+                    Return 1
+                Else
+                    '        MsgBox("2")
+                    Return 2
+                End If
+            Else
+                '     MsgBox("FALSE")
+                Return False
+            End If
+        Catch ex As Exception
+            MsgBox("FALL please check")
+        End Try
+        Return 0
+    End Function
+
     Public Function insert_log(ByVal bef_qty As String, ByVal status As String, ByVal lot As String, ByVal seq As String, ByVal item_cd As String)
         Dim time As DateTime = DateTime.Now
         Dim format As String = "yyyy-MM-dd HH:mm:ss"
@@ -6834,8 +7233,6 @@ L_END2:
         reader.Close()
         Return 0
     End Function
-
-
     Private Sub TextBox2_KeyDown(ByVal sender As System.Object, ByVal e As System.Windows.Forms.KeyEventArgs)
 
     End Sub
@@ -6843,4 +7240,38 @@ L_END2:
     Private Sub TextBox2_TextChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles TextBox2.TextChanged
         Label10.Text = "QTY AFTER : " & TextBox2.Text
     End Sub
+
+    Private Sub check_qr_KeyDown(ByVal sender As System.Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles check_qr.KeyDown
+        Select Case e.KeyCode
+            Case System.Windows.Forms.Keys.Enter
+                check_qr.Visible = False
+                Panel7.Visible = False
+                alert_no_tranfer_data.Visible = False
+                Dim stBuz As New Bt.LibDef.BT_BUZZER_PARAM()
+                Dim stVib As New Bt.LibDef.BT_VIBRATOR_PARAM()
+                Dim stLed As New Bt.LibDef.BT_LED_PARAM()
+                stBuz.dwOn = 200
+                stBuz.dwOff = 100
+                stBuz.dwCount = 2
+                stBuz.bVolume = 3
+                stBuz.bTone = 1
+                stVib.dwOn = 200
+                stVib.dwOff = 100
+                stVib.dwCount = 2
+                stLed.dwOn = 200
+                stLed.dwOff = 100
+                stLed.dwCount = 2
+                stLed.bColor = Bt.LibDef.BT_LED_MAGENTA
+                Bt.SysLib.Device.btBuzzer(1, stBuz)
+                Bt.SysLib.Device.btVibrator(1, stVib)
+                Bt.SysLib.Device.btLED(1, stLed)
+                If text_tmp.Text = "0" Then
+                    text_tmp.Text = 0
+                Else
+                    text_tmp.Text = scan_qty_total
+                End If
+                scan_qty.Text = ""
+                scan_qty.Focus()
+        End Select
+            End Sub
 End Class

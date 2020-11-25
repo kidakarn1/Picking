@@ -16,6 +16,7 @@ Public Class Select_plan_fg
     Dim result_get_REMAIN_SHIP_QTY As ArrayList = New ArrayList()
     Dim result_get_part_name As ArrayList = New ArrayList()
     Dim result_get_model As ArrayList = New ArrayList()
+    Dim SLIP_CD As ArrayList = New ArrayList()
     Public status As Integer = 0
     Public ml As Integer = 0
     Public count_time As Integer = 0
@@ -31,9 +32,11 @@ Public Class Select_plan_fg
     Public QTY As String = ""
     Public Lot_No As String = ""
     Public PD3 As Select_PD
+    Public index_
     Public FG_part_id As String = "NO_DATA"
     Public FG_part_name As String = "NO_DATA"
     Public FG_QTY As String = "NO_DATA"
+    Public Trip As String = "NO_DATA"
     Dim wi As String = ""
     Public part As part_detail
     Dim arr_LVL As ArrayList = New ArrayList()
@@ -42,7 +45,25 @@ Public Class Select_plan_fg
     Dim arr_order_no As ArrayList = New ArrayList()
     Dim arr_item_cd As ArrayList = New ArrayList()
     Dim arr_QTY_FG As ArrayList = New ArrayList()
-
+    Dim delivery_date As ArrayList = New ArrayList()
+    Dim F_wi As ArrayList = New ArrayList()
+    Dim F_item_cd As ArrayList = New ArrayList()
+    Dim F_scan_qty As ArrayList = New ArrayList()
+    Dim F_scan_lot As ArrayList = New ArrayList()
+    Dim F_tag_typ As ArrayList = New ArrayList()
+    Dim F_tag_readed As ArrayList = New ArrayList()
+    Dim F_Line_cd As ArrayList = New ArrayList()
+    Dim F_scan_emp As ArrayList = New ArrayList()
+    Dim F_term_cd As ArrayList = New ArrayList()
+    Dim F_updated_date As ArrayList = New ArrayList()
+    Dim F_updated_by As ArrayList = New ArrayList()
+    Dim F_updated_seq As ArrayList = New ArrayList()
+    Dim F_com_flg As ArrayList = New ArrayList()
+    Dim F_tag_remain_qty As ArrayList = New ArrayList()
+    Dim F_Create_Date As ArrayList = New ArrayList()
+    Dim F_Create_By As ArrayList = New ArrayList()
+    public F_DELIVERY_DATE As ArrayList = New ArrayList()
+    Dim check_data As ArrayList = New ArrayList()
     Public check_action As Integer = 0
     Public index_list_view As Integer = 0
     Public g_index As Integer = 0
@@ -60,6 +81,7 @@ LOOP_MAIN_OPEN:
             'combobox_line()
             'load_data()
             alert_check_part_no.Visible = False
+            p_show_confrim.Visible = False
             Line_Emp_cd.Text = main.show_code_id_user()
             check_action = 2
             Panel3.Visible = False
@@ -333,18 +355,22 @@ NEXT_END_WEB_POST:
         load_combobox1()
     End Sub
     Public Sub load_combobox1()
+        arr_com_flg = New ArrayList()
         Line_list_view.Items.Clear()
         result_order_id = New ArrayList
         result_get_CUST_ODR_NO = New ArrayList()
         result_get_ITEM_NO = New ArrayList()
         result_get_REMAIN_SHIP_QTY = New ArrayList()
         result_get_part_name = New ArrayList()
+        delivery_date = New ArrayList()
+        result_get_model = New ArrayList()
+        SLIP_CD = New ArrayList()
         Try
             Dim time As DateTime = DateTime.Now
             Dim format As String = "yyyy-MM-dd HH:mm:ss"
             Dim date_now = time.ToString(format)
 
-            Dim time_tomorrow As DateTime = Today.AddDays(1)
+            Dim time_tomorrow As DateTime = Today.AddDays(3)
             Dim format_tommorow = "yyyy/MM/dd"
             Dim date_tommorow = time_tomorrow.ToString(format_tommorow)
 
@@ -373,7 +399,7 @@ NEXT_END_WEB_POST:
             Dim date_start = now_date_detail & " 09:00"
             Dim date_end = date_tommorow & " 04:20"
             Dim phase As String = "NO_DATA"
-            Dim Trip As String = "NO_DATA"
+
             If ComboBox1.Text = "10" Then
                 phase = "51"
             ElseIf ComboBox1.Text = "8" Then
@@ -382,7 +408,6 @@ NEXT_END_WEB_POST:
 
             If ComboBox2.Text = "09:20" Then
                 Trip = 1
-
             ElseIf ComboBox2.Text = "16:00" Then
                 Trip = 2
             ElseIf ComboBox2.Text = "22:40" Then
@@ -390,7 +415,6 @@ NEXT_END_WEB_POST:
             ElseIf ComboBox2.Text = "04:00" Then
                 Trip = 4
             End If
-
             Dim sql As String = "EXEC dbo.Get_stock_fg_today  @phase ='" & phase & "', @date_start = '" & date_start & "' , @date_end = '" & date_end & "', @TRIP = '" & Trip & "'"
             Dim command_FA_TAG_FG As SqlCommand = New SqlCommand(sql, myconn_fa)
             reader = command_FA_TAG_FG.ExecuteReader()
@@ -399,19 +423,26 @@ NEXT_END_WEB_POST:
                 x = New ListViewItem(reader("CUST_ODR_NO").ToString())
                 x.SubItems.Add(reader("CUST_ITEM_CD").ToString())
                 x.SubItems.Add(reader("REMAIN_SHIP_QTY").ToString())
-                x.SubItems.Add(reader("Delivery_date").ToString().Substring(0, 10))
+                x.SubItems.Add(reader("Delivery_date").ToString())
+                delivery_date.Add(reader("Delivery_date").ToString())
                 result_get_CUST_ODR_NO.Add(reader("CUST_ODR_NO").ToString())
                 result_order_id.Add(reader("ORDER_FG_ID").ToString())
                 result_get_ITEM_NO.Add(reader("CUST_ITEM_CD").ToString())
                 result_get_REMAIN_SHIP_QTY.Add(reader("REMAIN_SHIP_QTY").ToString())
                 result_get_part_name.Add(reader("CUST_ITEM_NAME").ToString())
                 result_get_model.Add(reader("MODEL").ToString())
+                arr_com_flg.Add(reader("COM_FLG").ToString)
+                SLIP_CD.Add(reader("SLIP_CD").ToString)
+
 435:
                 Line_list_view.Items.Add(x)
                 If reader("USE_QTY").ToString() <> "0" Then
                     Line_list_view.Items(i).BackColor = Color.Yellow
                 End If
                 If reader("COM_FLG").ToString() = "1" Then
+                    Line_list_view.Items(i).BackColor = Color.FromArgb(136, 199, 249)
+                End If
+                If reader("COM_FLG").ToString() = "2" Then
                     Line_list_view.Items(i).BackColor = Color.FromArgb(103, 255, 103)
                 End If
                 i = i + 1
@@ -436,7 +467,17 @@ NEXT_END_WEB_POST:
         Try
             Dim status = 0
             Dim FG_part As String = Module1.FG_PART_CD.Substring(16)
+            ' MsgBox(Module1.FG_PART_CD)
+            Try
+                If FG_part.Substring(11, 1) = "G" Then
+                    FG_part = FG_part.Substring(0, 11)
+                End If
+            Catch ex As Exception
+
+            End Try
+            '  Dim cut_fg = FG_part.Substring(0, 11)
             Dim sql As String = "select * from FA_TAG_FG where ITEM_CD = '" & FG_part & "'  order by LOT_NO asc"
+            'MsgBox("sql_check = " & sql)
             Dim command_FA_TAG_FG As SqlCommand = New SqlCommand(sql, myconn_fa)
             reader = command_FA_TAG_FG.ExecuteReader()
             If reader.Read Then
@@ -468,7 +509,7 @@ NEXT_END_WEB_POST:
                 fo.Focus()
             End If
             reader.Close()
-            Dim sql_stock As String = "select sum(TAG_QTY) as stock_qty from FA_TAG_FG where ITEM_CD = '" & FG_part & "'"
+            Dim sql_stock As String = "select sum(TAG_QTY) as stock_qty from FA_TAG_FG where ITEM_CD = '" & FG_part & "' and FLG_STATUS = '2' "
             Dim commmand_stock As SqlCommand = New SqlCommand(sql_stock, myconn_fa)
             reader = commmand_stock.ExecuteReader()
             If reader.Read Then
@@ -498,6 +539,9 @@ NEXT_END_WEB_POST:
                 'Dim arr_QTY_FG = result_get_REMAIN_SHIP_QTY.Split(",")
                 'Dim arr_get_part_name = result_get_part_name.Split(",")
                 Module1.FG_ORDER_ID = result_order_id(index)
+                Module1.delivery_date = delivery_date(g_index)
+                Module1.SLIP_CD = SLIP_CD(g_index)
+                'MsgBox(Module1.SLIP_CD)
                 Dim order_id = result_get_CUST_ODR_NO(index)
                 Dim item_selected = result_get_ITEM_NO(index)
                 Dim QTY_FG = result_get_REMAIN_SHIP_QTY(index)
@@ -508,6 +552,29 @@ NEXT_END_WEB_POST:
                 set_QTY_FG(QTY_FG)
                 set_part_name(part_name)
                 set_CUST_ODR_NO(order_id)
+                'MsgBox(arr_com_flg(index))
+                If ComboBox2.Text = "09:20" Then
+                    Trip = 1
+                ElseIf ComboBox2.Text = "16:00" Then
+                    Trip = 2
+                ElseIf ComboBox2.Text = "22:40" Then
+                    Trip = 3
+                ElseIf ComboBox2.Text = "04:00" Then
+                    Trip = 4
+                End If
+                Module1.Trip = Trip
+                If arr_com_flg(index) = "0" Or arr_com_flg(index) = "2" Then
+                    btn_ok.Visible = True
+                    OK_CON.Visible = False
+                End If
+                If arr_com_flg(index) = "1" Then
+                    btn_ok.Visible = False
+                    OK_CON.Visible = True
+                ElseIf arr_com_flg(index) = "2" Then
+                    btn_ok.Visible = False
+                    OK_CON.Visible = False
+                End If
+
                 'endddddddddddddddddddddddddd(b)'
                 'set_part("49373-25590")
                 'set_QTY_FG("400")
@@ -570,6 +637,15 @@ NEXT_END_WEB_POST:
     Public Function FIFO_FG()
         Try
             Dim FG = Module1.FG_PART_CD.Substring(16)
+            ' Dim cut_e = FG.Substring(0, 11)
+            Try
+                If FG.Substring(11, 1) = "G" Then
+                    FG = FG.Substring(0, 11)
+                End If
+            Catch ex As Exception
+
+            End Try
+            
             Dim stock_location As String = "NO_DATA"
             Dim sql_lot As String = "EXEC dbo.get_data_order_fg @FG = '" & FG & "'"
             Dim command_lot As SqlCommand = New SqlCommand(sql_lot, myconn_fa)
@@ -587,11 +663,11 @@ NEXT_END_WEB_POST:
                 N_lot_qty = Integer.Parse(lot_qty)
                 Lot_plus_qty = Lot_plus_qty + N_lot_qty
                 'MsgBox("Lot_plus_qty = " & Lot_plus_qty)
-                If CDbl(Val(Module1.FG_QTY.Substring(6))) <= Lot_plus_qty.ToString Then 'check ว่า QTY ที่ จะไป pick กับ QTY ของ LOT คือ ถ้า QTY ที่จะเอาน้อยกว่าหรือ= QTY ใน LOT ก็เอาไปได้เลบ'
+                If CDbl(Val(Module1.FG_QTY.Substring(6))) <= CDbl(Val(Lot_plus_qty.ToString)) Then 'check ว่า QTY ที่ จะไป pick กับ QTY ของ LOT คือ ถ้า QTY ที่จะเอาน้อยกว่าหรือ= QTY ใน LOT ก็เอาไปได้เลบ'
                     Module1.arr_pick_detail_po.Add("")
                     Module1.arr_pick_detail_lot.Add(reader("LOT_NO").ToString)
                     If number = 1 Then
-                        If CDbl(Val(Module1.FG_QTY.Substring(6))) < Lot_plus_qty.ToString Then
+                        If CDbl(Val(Module1.FG_QTY.Substring(6))) <= CDbl(Val(Lot_plus_qty.ToString)) Then
                             Module1.arr_pick_detail_qty.Add(Module1.FG_QTY.Substring(6))
                         Else '>='
                             Module1.arr_pick_detail_qty.Add(totala_scan_qty)
@@ -639,5 +715,140 @@ NEXT_END_WEB_POST:
 
     Private Sub ComboBox2_SelectedIndexChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ComboBox2.SelectedIndexChanged
         load_combobox1()
+    End Sub
+
+    Private Sub Panel1_GotFocus(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Panel1.GotFocus
+
+    End Sub
+
+    Private Sub OK_CON_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles OK_CON.Click
+        p_show_confrim.Visible = True
+    End Sub
+
+    Private Sub Button4_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Button4.Click
+        p_show_confrim.Visible = False
+    End Sub
+
+    Private Sub Button3_Click_1(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Button3.Click
+        Try
+            Dim sql_get_picking As String = "select * from sup_scan_pick_detail where wi = '" & result_get_CUST_ODR_NO(g_index) & "' and item_cd = '" & result_get_ITEM_NO(g_index) & "' and Delivery_date = '" & delivery_date(g_index) & "'"
+            'MsgBox(sql_get_picking)
+            Dim cmd_get_data As SqlCommand = New SqlCommand(sql_get_picking, myConn)
+            reader = cmd_get_data.ExecuteReader()
+            Do While reader.Read()
+                'MsgBox("1")
+                F_wi.Add(reader.Item(1))
+                'MsgBox("2")
+                F_item_cd.Add(reader.Item(2))
+                'MsgBox("3")
+                F_scan_qty.Add(reader.Item(3))
+                'MsgBox("4")
+                F_scan_lot.Add(reader.Item(4))
+                'MsgBox("5")
+                F_updated_seq.Add(reader.Item(11))
+                'MsgBox("6")
+                F_com_flg.Add(reader.Item(12))
+                'MsgBox("7")
+                F_Line_cd.Add(reader.Item(17))
+                'MsgBox("8")
+                F_DELIVERY_DATE.Add(reader.Item(18))
+                ' MsgBox("9")
+            Loop
+            reader.Close()
+            'MsgBox("loop")
+            Dim delivery_date_check As String = "NO_DATA"
+            Dim num As Integer = 0
+            For Each key In F_wi
+                ' MsgBox("seq = = ==" & F_updated_seq(num))
+                Dim wi As String = key
+                Dim item_cd As String = F_item_cd(num)
+                Dim scan_qty As String = F_scan_qty(num)
+                Dim lot As String = F_scan_lot(num)
+                Dim seq As String = F_updated_seq(num)
+                Dim com_flg As String = F_com_flg(num)
+                Dim line_cd As String = F_Line_cd(num)
+                delivery_date_check = F_DELIVERY_DATE(num)
+                'MsgBox("222")
+                Cut_stock(wi, item_cd, scan_qty, lot, seq, com_flg, line_cd, delivery_date_check)
+                num += 1
+            Next
+            'MsgBox("loop1")
+            Dim str_update_qty = "EXEC [dbo].[confirm_plan_fg] @ITEM_CD = '" & result_get_ITEM_NO(g_index) & "'  , @DELIVERY_DATE = '" & delivery_date(g_index) & "' , @TRIP = '" & Trip & "' ,@COM_FLG= '2'"
+            'MsgBox(str_update_qty)
+            Dim cmd_update As SqlCommand = New SqlCommand(str_update_qty, myconn_fa)
+            reader = cmd_update.ExecuteReader()
+            reader.Close()
+            p_show_confrim.Visible = False
+            load_combobox1()
+        Catch ex As Exception
+            'MsgBox("FAILL confrim")
+        End Try
+    End Sub
+    Public Sub Cut_stock(ByVal wi As String, ByVal item_cd As String, ByVal scan_qty As String, ByVal lot As String, ByVal seq As String, ByVal com_flg As String, ByVal line_cd As String, ByVal delivery_date As String)
+        Try
+            ' MsgBox("11")
+            Dim seq1 As String = "no_data"
+            'MsgBox("seq length = " & seq.Length())
+            If seq.Length() = "8" Then
+                seq1 = seq.Substring(0, 3)
+                'MsgBox("A")
+            ElseIf seq.Length() = "5" Then
+                seq1 = " "
+                'MsgBox("B")
+            Else
+                seq1 = seq.Substring(8, 3)
+                'MsgBox("C")
+            End If
+            'MsgBox("0002")
+            'MsgBox("seq1 = " & seq1)
+            Try
+                If item_cd.Substring(11, 1) = "G" Then
+                    item_cd = item_cd.Substring(0, 11)
+                End If
+            Catch ex As Exception
+
+            End Try
+            ' MsgBox("0003")
+            Dim get_id_log = "select * from FA_TAG_FG where ITEM_CD = '" & item_cd & "' AND TAG_SEQ = '" & seq1 & "'AND LOT_NO = '" & lot & "' and KEY_UP = '" & seq & "' and LINE_CD = '" & line_cd & "'"
+            'MsgBox("===>get_id_log" & get_id_log)
+            Dim cmd_get As SqlCommand = New SqlCommand(get_id_log, myconn_fa)
+            reader = cmd_get.ExecuteReader()
+            Dim update_qty As Double = 0.0
+            If reader.Read Then
+                '    MsgBox("rrr")
+                update_qty = CDbl(Val(reader("TAG_QTY").ToString())) - CDbl(Val(scan_qty))
+            End If
+            reader.Close()
+            'MsgBox("-------------->>><<<")
+            Dim FLG_STATUS As String = "0"
+            If update_qty <= 0 Then
+                update_qty = 0
+                FLG_STATUS = "0"
+            Else
+                FLG_STATUS = "1"
+            End If
+            'MsgBox("----000")
+            If seq.Length() = "8" Then
+                seq1 = seq.Substring(0, 3)
+            ElseIf seq.Length() = "5" Then
+                seq1 = " "
+            Else
+                seq1 = seq.Substring(8, 3)
+            End If
+            Dim str_update_qty = "EXEC [dbo].[cut_stock_pick_fg] @qty = '" & update_qty & "'  , @flg_status = '" & FLG_STATUS & "' , @item_cd = '" & item_cd & "' , @seq = '" & seq1 & "' , @lot = '" & lot & "' , @KEY_UP = '" & seq & "' , @LINE_CD = '" & line_cd & "'"
+            ' MsgBox("===>str" & str_update_qty)
+            Dim cmd_update As SqlCommand = New SqlCommand(str_update_qty, myconn_fa)
+            reader = cmd_update.ExecuteReader()
+            reader.Close()
+        Catch ex As Exception
+            MsgBox("FAILL Cut_stock" & vbNewLine & ex.Message, "FAILL")
+        End Try
+    End Sub
+    Private Sub p_show_confrim_GotFocus(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles p_show_confrim.GotFocus
+
+    End Sub
+
+    Private Sub Label2_ParentChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Label2.ParentChanged
+
     End Sub
 End Class

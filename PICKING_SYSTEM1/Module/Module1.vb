@@ -4,6 +4,7 @@ Imports System.Data
 Imports System.Data.SqlClient
 Imports System.Configuration
 Module Module1
+    Public check_page As String = "NO_DATA"
     Public A_WI As String = "NO_DATA"
     Public MENU_ID As String = "NO_DATA"
     Public A_PD As String = "NO_DATA"
@@ -21,9 +22,11 @@ Module Module1
     Public user_id = "No data"
     Public hand_number = "No data"
     Public CODE_PD As String = "No data"
+    Public SLIP_CD As String = "No data"
     Public data_combo As String = "No data"
     Public combo_pd As String = "No data"
     Public wi As String = "No data"
+    Public Trip As String = "NO_DATA"
     Public line As String = "no data"
     Public tag_remain_qty As String = "no data"
     Public locations As String = "no data"
@@ -63,7 +66,7 @@ Module Module1
     Public M_reprint As String = "NODATA"
     Public arr_LVL As ArrayList = New ArrayList()
     Public arr_com_flg As ArrayList = New ArrayList()
-
+    Public delivery_date As String = "NO_DATA"
     Public FG_MODEL As String = "NO_DATA"
     Public FG_ORDER_ID As String = "NO_DATA"
     Public FG_LINE As String = "NO_DATA"

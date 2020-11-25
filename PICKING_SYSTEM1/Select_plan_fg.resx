@@ -147,7 +147,106 @@
     <value>Panel2</value>
   </data>
   <data name="&gt;&gt;Button1.ZOrder" xml:space="preserve">
-    <value>9</value>
+    <value>11</value>
+  </data>
+  <data name="Button4.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Tahoma, 36pt</value>
+  </data>
+  <data name="Button4.Location" type="System.Drawing.Point, System.Drawing">
+    <value>26, 163</value>
+  </data>
+  <data name="Button4.Size" type="System.Drawing.Size, System.Drawing">
+    <value>338, 151</value>
+  </data>
+  <data name="Button4.TabIndex" type="System.Int32, mscorlib">
+    <value>1</value>
+  </data>
+  <data name="Button4.Text" xml:space="preserve">
+    <value>CANCEL</value>
+  </data>
+  <data name="&gt;&gt;Button4.Name" xml:space="preserve">
+    <value>Button4</value>
+  </data>
+  <data name="&gt;&gt;Button4.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;Button4.Parent" xml:space="preserve">
+    <value>p_show_confrim</value>
+  </data>
+  <data name="&gt;&gt;Button4.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="Button3.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Tahoma, 36pt</value>
+  </data>
+  <data name="Button3.Location" type="System.Drawing.Point, System.Drawing">
+    <value>26, 6</value>
+  </data>
+  <data name="Button3.Size" type="System.Drawing.Size, System.Drawing">
+    <value>338, 151</value>
+  </data>
+  <data name="Button3.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <data name="Button3.Text" xml:space="preserve">
+    <value>CONFIRM</value>
+  </data>
+  <data name="&gt;&gt;Button3.Name" xml:space="preserve">
+    <value>Button3</value>
+  </data>
+  <data name="&gt;&gt;Button3.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;Button3.Parent" xml:space="preserve">
+    <value>p_show_confrim</value>
+  </data>
+  <data name="&gt;&gt;Button3.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="p_show_confrim.Location" type="System.Drawing.Point, System.Drawing">
+    <value>50, 158</value>
+  </data>
+  <data name="p_show_confrim.Size" type="System.Drawing.Size, System.Drawing">
+    <value>387, 324</value>
+  </data>
+  <data name="&gt;&gt;p_show_confrim.Name" xml:space="preserve">
+    <value>p_show_confrim</value>
+  </data>
+  <data name="&gt;&gt;p_show_confrim.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Panel, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;p_show_confrim.Parent" xml:space="preserve">
+    <value>Panel2</value>
+  </data>
+  <data name="&gt;&gt;p_show_confrim.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="OK_CON.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Yu Gothic UI, 18pt, style=Bold</value>
+  </data>
+  <data name="OK_CON.Location" type="System.Drawing.Point, System.Drawing">
+    <value>372, 539</value>
+  </data>
+  <data name="OK_CON.Size" type="System.Drawing.Size, System.Drawing">
+    <value>82, 40</value>
+  </data>
+  <data name="OK_CON.TabIndex" type="System.Int32, mscorlib">
+    <value>50</value>
+  </data>
+  <data name="OK_CON.Text" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="&gt;&gt;OK_CON.Name" xml:space="preserve">
+    <value>OK_CON</value>
+  </data>
+  <data name="&gt;&gt;OK_CON.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;OK_CON.Parent" xml:space="preserve">
+    <value>Panel2</value>
+  </data>
+  <data name="&gt;&gt;OK_CON.ZOrder" xml:space="preserve">
+    <value>1</value>
   </data>
   <data name="PictureBox1.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
@@ -1431,7 +1530,7 @@
     <value>Panel2</value>
   </data>
   <data name="&gt;&gt;PictureBox1.ZOrder" xml:space="preserve">
-    <value>0</value>
+    <value>2</value>
   </data>
   <data name="ComboBox2.Font" type="System.Drawing.Font, System.Drawing">
     <value>Tahoma, 16pt</value>
@@ -1455,7 +1554,7 @@
     <value>Panel2</value>
   </data>
   <data name="&gt;&gt;ComboBox2.ZOrder" xml:space="preserve">
-    <value>1</value>
+    <value>3</value>
   </data>
   <data name="ComboBox1.Font" type="System.Drawing.Font, System.Drawing">
     <value>Tahoma, 16pt</value>
@@ -1479,7 +1578,7 @@
     <value>Panel2</value>
   </data>
   <data name="&gt;&gt;ComboBox1.ZOrder" xml:space="preserve">
-    <value>2</value>
+    <value>4</value>
   </data>
   <data name="Label2.Font" type="System.Drawing.Font, System.Drawing">
     <value>Tahoma, 12pt, style=Bold</value>
@@ -1503,7 +1602,7 @@
     <value>Panel2</value>
   </data>
   <data name="&gt;&gt;Label2.ZOrder" xml:space="preserve">
-    <value>3</value>
+    <value>5</value>
   </data>
   <data name="alert_check_part_no.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
@@ -2407,7 +2506,7 @@
     <value>Panel2</value>
   </data>
   <data name="&gt;&gt;alert_check_part_no.ZOrder" xml:space="preserve">
-    <value>4</value>
+    <value>6</value>
   </data>
   <data name="Label1.Font" type="System.Drawing.Font, System.Drawing">
     <value>Tahoma, 12pt, style=Bold</value>
@@ -2431,7 +2530,7 @@
     <value>Panel2</value>
   </data>
   <data name="&gt;&gt;Label1.ZOrder" xml:space="preserve">
-    <value>5</value>
+    <value>7</value>
   </data>
   <data name="Label10.Font" type="System.Drawing.Font, System.Drawing">
     <value>Tahoma, 20pt, style=Bold</value>
@@ -4232,7 +4331,7 @@
     <value>Panel2</value>
   </data>
   <data name="&gt;&gt;Panel8.ZOrder" xml:space="preserve">
-    <value>6</value>
+    <value>8</value>
   </data>
   <data name="btn_ok.Font" type="System.Drawing.Font, System.Drawing">
     <value>Yu Gothic UI, 18pt, style=Bold</value>
@@ -4259,7 +4358,7 @@
     <value>Panel2</value>
   </data>
   <data name="&gt;&gt;btn_ok.ZOrder" xml:space="preserve">
-    <value>7</value>
+    <value>9</value>
   </data>
   <data name="Label3.Font" type="System.Drawing.Font, System.Drawing">
     <value>FC Home, 16pt, style=Bold</value>
@@ -4286,7 +4385,7 @@
     <value>Panel2</value>
   </data>
   <data name="&gt;&gt;Label3.ZOrder" xml:space="preserve">
-    <value>8</value>
+    <value>10</value>
   </data>
   <data name="ColumnHeader1.Text" xml:space="preserve">
     <value>ORDER NO</value>
@@ -4298,7 +4397,7 @@
     <value>ITEM NO</value>
   </data>
   <data name="ColumnHeader2.Width" type="System.Int32, mscorlib">
-    <value>127</value>
+    <value>182</value>
   </data>
   <data name="ColumnHeader3.Text" xml:space="preserve">
     <value>QTY</value>
@@ -4337,7 +4436,7 @@
     <value>Panel2</value>
   </data>
   <data name="&gt;&gt;Line_list_view.ZOrder" xml:space="preserve">
-    <value>10</value>
+    <value>12</value>
   </data>
   <data name="Line_Emp_cd.Font" type="System.Drawing.Font, System.Drawing">
     <value>Arial, 18pt, style=Bold</value>
@@ -4361,7 +4460,7 @@
     <value>Panel2</value>
   </data>
   <data name="&gt;&gt;Line_Emp_cd.ZOrder" xml:space="preserve">
-    <value>11</value>
+    <value>13</value>
   </data>
   <data name="Label8.Font" type="System.Drawing.Font, System.Drawing">
     <value>Arial, 18pt, style=Bold</value>
@@ -4385,7 +4484,7 @@
     <value>Panel2</value>
   </data>
   <data name="&gt;&gt;Label8.ZOrder" xml:space="preserve">
-    <value>12</value>
+    <value>14</value>
   </data>
   <data name="fo.Location" type="System.Drawing.Point, System.Drawing">
     <value>349, 93</value>
@@ -4406,7 +4505,7 @@
     <value>Panel2</value>
   </data>
   <data name="&gt;&gt;fo.ZOrder" xml:space="preserve">
-    <value>13</value>
+    <value>15</value>
   </data>
   <data name="Panel2.Location" type="System.Drawing.Point, System.Drawing">
     <value>0, 3</value>

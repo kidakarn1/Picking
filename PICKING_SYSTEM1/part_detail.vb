@@ -4354,7 +4354,7 @@ L_END2:
                 plan_seq = scan_qty.Text.Substring(16, 3)
                 lot_sep = scan_qty.Text.Substring(58, 4)
                 tag_number = scan_qty.Text.Substring(100, 3)
-                tag_seq = plan_seq + lot_sep + tag_number
+                tag_seq = scan_qty.Text.Substring(87, 16) 'plan_seq + lot_sep + tag_number
                 order_number = scan_qty.Text.Substring(58, 4) 'LOT FA'
             ElseIf Len_length = 62 Then 'web post'
                 order_number = scan_qty.Text.Substring(2, 10)

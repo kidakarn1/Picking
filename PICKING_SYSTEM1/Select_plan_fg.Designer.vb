@@ -24,6 +24,10 @@ Partial Public Class Select_plan_fg
         Dim ListViewItem1 As System.Windows.Forms.ListViewItem = New System.Windows.Forms.ListViewItem
         Me.Panel1 = New System.Windows.Forms.Panel
         Me.Panel2 = New System.Windows.Forms.Panel
+        Me.p_show_confrim = New System.Windows.Forms.Panel
+        Me.Button4 = New System.Windows.Forms.Button
+        Me.Button3 = New System.Windows.Forms.Button
+        Me.OK_CON = New System.Windows.Forms.Button
         Me.PictureBox1 = New System.Windows.Forms.PictureBox
         Me.ComboBox2 = New System.Windows.Forms.ComboBox
         Me.ComboBox1 = New System.Windows.Forms.ComboBox
@@ -64,6 +68,7 @@ Partial Public Class Select_plan_fg
         Button1 = New System.Windows.Forms.Button
         Me.Panel1.SuspendLayout()
         Me.Panel2.SuspendLayout()
+        Me.p_show_confrim.SuspendLayout()
         Me.Panel8.SuspendLayout()
         Me.Panel3.SuspendLayout()
         Me.Panel4.SuspendLayout()
@@ -88,6 +93,8 @@ Partial Public Class Select_plan_fg
         'Panel2
         '
         Me.Panel2.BackColor = System.Drawing.Color.MediumPurple
+        Me.Panel2.Controls.Add(Me.p_show_confrim)
+        Me.Panel2.Controls.Add(Me.OK_CON)
         Me.Panel2.Controls.Add(Me.PictureBox1)
         Me.Panel2.Controls.Add(Me.ComboBox2)
         Me.Panel2.Controls.Add(Me.ComboBox1)
@@ -104,6 +111,34 @@ Partial Public Class Select_plan_fg
         Me.Panel2.Controls.Add(Me.fo)
         resources.ApplyResources(Me.Panel2, "Panel2")
         Me.Panel2.Name = "Panel2"
+        '
+        'p_show_confrim
+        '
+        Me.p_show_confrim.BackColor = System.Drawing.Color.DarkCyan
+        Me.p_show_confrim.Controls.Add(Me.Button4)
+        Me.p_show_confrim.Controls.Add(Me.Button3)
+        resources.ApplyResources(Me.p_show_confrim, "p_show_confrim")
+        Me.p_show_confrim.Name = "p_show_confrim"
+        '
+        'Button4
+        '
+        Me.Button4.BackColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(128, Byte), Integer), CType(CType(128, Byte), Integer))
+        resources.ApplyResources(Me.Button4, "Button4")
+        Me.Button4.Name = "Button4"
+        '
+        'Button3
+        '
+        Me.Button3.BackColor = System.Drawing.Color.FromArgb(CType(CType(128, Byte), Integer), CType(CType(192, Byte), Integer), CType(CType(255, Byte), Integer))
+        resources.ApplyResources(Me.Button3, "Button3")
+        Me.Button3.ForeColor = System.Drawing.Color.FromArgb(CType(CType(0, Byte), Integer), CType(CType(0, Byte), Integer), CType(CType(0, Byte), Integer))
+        Me.Button3.Name = "Button3"
+        '
+        'OK_CON
+        '
+        Me.OK_CON.BackColor = System.Drawing.Color.Green
+        resources.ApplyResources(Me.OK_CON, "OK_CON")
+        Me.OK_CON.ForeColor = System.Drawing.Color.White
+        Me.OK_CON.Name = "OK_CON"
         '
         'PictureBox1
         '
@@ -345,6 +380,7 @@ Partial Public Class Select_plan_fg
         Me.Name = "Select_plan_fg"
         Me.Panel1.ResumeLayout(False)
         Me.Panel2.ResumeLayout(False)
+        Me.p_show_confrim.ResumeLayout(False)
         Me.Panel8.ResumeLayout(False)
         Me.Panel3.ResumeLayout(False)
         Me.Panel4.ResumeLayout(False)
@@ -390,4 +426,8 @@ Partial Public Class Select_plan_fg
     Friend WithEvents ComboBox2 As System.Windows.Forms.ComboBox
     Friend WithEvents ColumnHeader4 As System.Windows.Forms.ColumnHeader
     Friend WithEvents PictureBox1 As System.Windows.Forms.PictureBox
+    Friend WithEvents OK_CON As System.Windows.Forms.Button
+    Friend WithEvents p_show_confrim As System.Windows.Forms.Panel
+    Friend WithEvents Button4 As System.Windows.Forms.Button
+    Friend WithEvents Button3 As System.Windows.Forms.Button
 End Class
